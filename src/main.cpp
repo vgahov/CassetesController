@@ -148,7 +148,7 @@ int main(void) {
     Timer0::get_instance().set_interrupt_callback(&dispatcher);
 
     StateMachine state_machine;
-    KeyFabric key_fabric(dispatcher, state_machine);
+    // KeyFabric key_fabric(dispatcher, state_machine);
 
     sei();
 

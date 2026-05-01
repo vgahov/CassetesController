@@ -10,16 +10,19 @@ enum class eKeyState {
 
 enum class eKeyRole {
     STOP,
-    TransportOn,
+    TransporterOn,
     RollerDownStairs,
-    TableChanging,
-    TableBack,
-    TableForward,
-    CassetteDownStairs,
-    CassetteUpStairs,
-    TableBackDown,
-    TableBackUp,
-    TableFront,  //???
+    uTableChanging,
+    uTableBack,
+    uTableForward,
+    sCassetteDownStairs,  // «кассета низ» (нижнее положение кассеты)
+    sCassetteUpStairs,  // «кассета верх» (верхнее положение кассеты);
+    sTableBackDown,  // «стол зад низ» (датчик припаркованного положения нижнего
+                     // стола в кассете);
+    sTableBackUp,  // «стол зад верх» (датчик припаркованного положения
+                   // верхнего стола в кассете);
+    sTableFront,  // «стол спереди» (датчик припаркованного положения стола к
+                  // краю рабочей зоны);
     RollerUpStairs,
     Roller,
     KEY_ROLE_COUNT

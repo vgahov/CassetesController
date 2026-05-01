@@ -7,18 +7,21 @@
 #include "keyhandler.h"
 #include "keyhandlerlistener.h"
 
-struct RolePin {
-    eKeyRole key_role;
-    Pin pin;
-};
-
 class KeyFabric {
 private:
+    struct RolePin {
+        eKeyRole key_role;
+        Pin pin;
+    };
+
     static constexpr uint8_t KEY_ROLE_COUNT =
         static_cast<uint8_t>(eKeyRole::KEY_ROLE_COUNT);
     static const RolePin role_pins[KEY_ROLE_COUNT];
 
     static uint8_t storage[KEY_ROLE_COUNT][sizeof(KeyHandler)];
+
+    // static uint8_t s_key_fabric_object[];
+    // static KeyFabric* s_instance;
 
     static void init_key_handler(IDispatcher& dispatcher,
                                  IKeyHandlerListener& key_handler_listener) {
@@ -34,14 +37,8 @@ private:
     }
 
 public:
-    KeyFabric(IDispatcher& dispatcher, IKeyHandlerListener& listener) {
+    static void init(IDispatcher& dispatcher, IKeyHandlerListener& listener) {
         init_key_handler(dispatcher, listener);
-    }
-
-    ~KeyFabric() {
-        for(size_t index = 0; index < KEY_ROLE_COUNT; ++index) {
-            reinterpret_cast<KeyHandler*>(storage[index])->~KeyHandler();
-        }
     }
 };
 
