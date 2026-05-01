@@ -10,16 +10,18 @@
 
 #include "dispatcherlistener.h"
 
-enum class ePeriodUnit { uSec, mSec, Sec };
-
-class Dispatcher : public ITimerListener {
+class Dispatcher : public ITimerListener, public IDispatcher {
     static constexpr uint32_t LISTENERS_NUMBER = 10;
 
 public:
+    // ITimerListener
     void on_timer_call() override;
     void set_timer_period(uint32_t period_usec) override;
+
+    // IDispatcher
     void add_listener(IDispatcherListener *listener, uint32_t period,
-                      ePeriodUnit unit);
+                      ePeriodUnit unit) override;
+
     void loop();
 
 private:

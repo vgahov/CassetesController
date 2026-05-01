@@ -43,6 +43,8 @@ Pin &Pin::operator=(const Pin &other) {
     m_port = other.m_port;
     m_pin = other.m_pin;
     m_is_valid = other.m_is_valid;
+
+    return *this;
 }
 
 void Pin::set_as_output() {

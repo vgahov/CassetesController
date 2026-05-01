@@ -6,6 +6,8 @@
 #include <avr/io.h>
 #include <avr/wdt.h>
 #include <dispatcher/dispatcher.h>
+#include <logic/keyhandler/keysfabric.h>
+#include <logic/statemachine/statemachine.h>
 #include <util/delay.h>
 
 void ports_init0() {
@@ -140,9 +142,13 @@ int main(void) {
         TIFR0 = 0xFF;
         TIMSK0 = (1 << OCIE0A);
     }*/
+
     Dispatcher dispatcher;
     Timer0::init(1000000);
     Timer0::get_instance().set_interrupt_callback(&dispatcher);
+
+    StateMachine state_machine;
+    KeyFabric key_fabric(dispatcher, state_machine);
 
     sei();
 

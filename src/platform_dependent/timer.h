@@ -38,29 +38,6 @@ private:
                                   uint16_t divider);
     void set_divider(uint16_t divider);
 
-    void handle_divider_logic();
-    bool handle_skipper_logic();
-
-    static const uint32_t PRECISION_COEF = 1000;
-    // result is bigger than real in 100times (to avoid float)
-    static uint32_t get_one_tick_duration(uint16_t divider) {
-        return (divider * 1000000) / (FREQUENCY / PRECISION_COEF);
-    }
-
-    static uint32_t get_number_of_ticks(uint32_t necessary_period_usec,
-                                        uint16_t divider) {
-        const auto one_tick_duration = get_one_tick_duration(divider);
-        return (necessary_period_usec * PRECISION_COEF) / one_tick_duration;
-    }
-
-    static uint32_t get_timer_period(uint32_t necessary_period_usec,
-                                     uint16_t divider) {
-        const auto one_tick_duration = get_one_tick_duration(divider);
-        const auto number_of_ticks =
-            get_number_of_ticks(necessary_period_usec, divider);
-        return (number_of_ticks * one_tick_duration) / PRECISION_COEF;
-    }
-
 private:
     // TimerReg m_timer;
     ITimerListener* m_timer_callback;

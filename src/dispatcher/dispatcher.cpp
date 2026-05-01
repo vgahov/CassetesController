@@ -29,7 +29,7 @@ void Dispatcher::add_listener(IDispatcherListener* listener, uint32_t period,
     m_listeners[m_current_listener_pos].period_usec = period_usec;
     m_listeners[m_current_listener_pos].current_period = 0;
     ++m_current_listener_pos;
-    // listener->set_dispatcher_period(period_usec);
+    listener->set_dispatcher_period(period_usec);
 }
 
 void Dispatcher::loop() {

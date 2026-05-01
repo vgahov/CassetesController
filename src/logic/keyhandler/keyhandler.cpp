@@ -1,8 +1,12 @@
 ﻿#include "keyhandler.h"
 
-KeyHandler::KeyHandler(Pin pin, eKeyRole key_role,
+KeyHandler::KeyHandler(IDispatcher* dispatcher, Pin pin, eKeyRole key_role,
                        IKeyHandlerListener* listener)
-    : m_pin(pin), m_listener(listener), m_key_role(key_role) {}
+    : m_pin(pin), m_listener(listener), m_key_role(key_role) {
+    if(dispatcher) {
+        dispatcher->add_listener(this, 100, ePeriodUnit::mSec);
+    }
+}
 
 void KeyHandler::on_dispatcher_call() {
     if(!is_ready()) {

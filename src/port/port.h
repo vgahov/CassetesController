@@ -5,11 +5,7 @@
 #include <stdint-gcc.h>
 #endif
 
-struct Port {
-    const volatile unsigned char *pin;
-    volatile unsigned char *dir;
-    volatile unsigned char *port;
-};
+#include <dispatcher/dispatcherlistener.h>
 
 enum class ePORT {
     ePORTA,

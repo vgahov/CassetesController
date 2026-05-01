@@ -10,6 +10,7 @@ enum class eKeyState {
 
 enum class eKeyRole {
     STOP,
+    TransportOn,
     RollerDownStairs,
     TableChanging,
     TableBack,
@@ -20,7 +21,8 @@ enum class eKeyRole {
     TableBackUp,
     TableFront,  //???
     RollerUpStairs,
-    Roller
+    Roller,
+    KEY_ROLE_COUNT
 };
 
 class IKeyHandlerListener {

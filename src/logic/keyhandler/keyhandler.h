@@ -8,7 +8,8 @@
 
 class KeyHandler : public IDispatcherListener {
 public:
-    KeyHandler(Pin pin, eKeyRole key_role, IKeyHandlerListener* listener);
+    KeyHandler(IDispatcher* dispatcher, Pin pin, eKeyRole key_role,
+               IKeyHandlerListener* listener);
 
     void on_dispatcher_call() override;
     void set_dispatcher_period(uint32_t period_usec) override;
