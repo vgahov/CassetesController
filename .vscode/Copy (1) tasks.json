@@ -1,0 +1,102 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "AVR Build",
+      "type": "shell",
+      "command": "avr-gcc",
+      "args": [
+        "-mmcu=atmega328p",
+        "-DF_CPU=16000000UL",
+        "-Os",
+        "-Wall",
+        "-Wextra",
+        "-std=c11",
+        "-g",
+        "src/main.cpp",
+        "-o",
+        "${workspaceFolder}/build/main.elf"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    },
+    {
+      "label": "avr: build hex",
+      "type": "shell",
+      "command": "avr-objcopy",
+      "args": [
+        "-O",
+        "ihex",
+        "-R",
+        ".eeprom",
+        "${workspaceFolder}/build/main.elf",
+        "${workspaceFolder}/build/main.hex"
+      ],
+      "dependsOn": "AVR Build",
+      "problemMatcher": []
+    },
+    {
+      "label": "avr: size",
+      "type": "shell",
+      "command": "avr-size",
+      "args": [
+        "--mcu=atmega328p",
+        "--format=avr",
+        "${workspaceFolder}/build/main.elf"
+      ],
+      "dependsOn": "AVR Build",
+      "problemMatcher": []
+    },
+    {
+      "label": "avr: flash (usbasp)",
+      "type": "shell",
+      "command": "avrdude",
+      "args": [
+        "-p",
+        "m328p",
+        "-c",
+        "usbasp",
+        "-U",
+        "flash:w:${workspaceFolder}/build/main.hex:i"
+      ],
+      "dependsOn": "avr: build hex",
+      "problemMatcher": []
+    },
+    {
+      "label": "avr: clean",
+      "type": "shell",
+      "command": "rm",
+      "args": [
+        "-rf",
+        "${workspaceFolder}/build"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "avr: simulate",
+      "type": "shell",
+      "command": "simavr",
+      "args": [
+        "-m",
+        "atmega328p",
+        "-f",
+        "16000000",
+        "-g",
+        "build/main.elf"
+      ],
+      "dependsOn": "avr: compile",
+      "problemMatcher": []
+    },
+    {
+      "label": "kill simavr",
+      "type": "shell",
+      "command": "pkill",
+      "args": ["simavr"]
+    }
+  ]
+}
