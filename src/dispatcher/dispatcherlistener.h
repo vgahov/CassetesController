@@ -8,12 +8,9 @@
 class IDispatcherListener {
 public:
     virtual ~IDispatcherListener() = default;
-    virtual void on_dispatcher_call() = 0;
-    virtual void set_dispatcher_period(uint32_t period_usec) = 0;
+    virtual void on_dispatcher_call() {};
+    virtual void set_dispatcher_period(uint32_t period_usec) {};
 };
-
-inline void IDispatcherListener::on_dispatcher_call() {}
-inline void IDispatcherListener::set_dispatcher_period(uint32_t) {}
 
 enum class ePeriodUnit { uSec, mSec, Sec };
 class IDispatcher {

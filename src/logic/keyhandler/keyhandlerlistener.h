@@ -4,12 +4,13 @@
 enum class eKeyState {
     PRESSED,
     LONG_PRESSED,
+    UNPRESSED,
     LONG_UNPRESSED,
     CONTINUOUS_PRESSED
 };
 
 enum class eKeyRole {
-    STOP,
+    uSTOP,
     TransporterOn,
     RollerDownStairs,
     uTableChanging,

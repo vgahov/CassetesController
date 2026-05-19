@@ -30,6 +30,14 @@ private:
         static_cast<uint8_t>(eOutputRole::KEY_ROLE_COUNT);
     static RolePin role_pins[OUTPUT_ROLE_COUNT];
 
+public:
+    static OutputHandler& get_instance() {
+        static OutputHandler instance;
+        return instance;
+    }
+
+    void set_role_state(eOutputRole role, bool on);
+
     void set_table_forward(bool on = true);
     void set_table_back(bool on = true);
     void set_table_indication(bool on = true);
@@ -43,13 +51,5 @@ private:
     void set_roller_down_stairs(bool on = true);
     void set_roller_up_stairs(bool on = true);
     void clear_all();
-
-    void set_role_state(eOutputRole role, bool on);
-
-public:
-    static OutputHandler& get_instance() {
-        static OutputHandler instance;
-        return instance;
-    }
 };
 #endif  // OUTPUTHANDLER_H

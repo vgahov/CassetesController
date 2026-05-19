@@ -1,5 +1,7 @@
 ﻿#include "dispatcher.h"
 
+#include <avr/interrupt.h>
+
 void Dispatcher::on_timer_call() { m_tick = true; }
 
 void Dispatcher::set_timer_period(uint32_t period_usec) {
@@ -34,10 +36,14 @@ void Dispatcher::add_listener(IDispatcherListener* listener, uint32_t period,
 
 void Dispatcher::loop() {
     while(!m_stop) {
-        if(!m_tick) {
+        cli();
+        const auto tick = m_tick;
+        m_tick = false;
+        sei();
+
+        if(!tick) {
             continue;
         }
-        m_tick = false;
 
         if(!m_period_usec) {
             continue;

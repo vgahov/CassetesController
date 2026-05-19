@@ -6,6 +6,7 @@
 #include <avr/io.h>
 #include <avr/wdt.h>
 #include <dispatcher/dispatcher.h>
+#include <dispatcher/dispatcherlistener.h>
 #include <logic/keyhandler/keysfabric.h>
 #include <logic/statemachine/statemachine.h>
 #include <util/delay.h>
@@ -147,11 +148,12 @@ int main(void) {
     Timer0::init(1000000);
     Timer0::get_instance().set_interrupt_callback(&dispatcher);
 
-    StateMachine state_machine;
-    // KeyFabric key_fabric(dispatcher, state_machine);
+    auto& output_handler = OutputHandler::get_instance();
+    StateMachine state_machine(output_handler);
+    KeyFabric::init(dispatcher, state_machine);
+    dispatcher.add_listener(&state_machine, 10, ePeriodUnit::mSec);
 
     sei();
 
-    while(1) {
-    }
+    dispatcher.loop();
 }

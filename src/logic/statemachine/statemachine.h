@@ -3,29 +3,41 @@
 
 #include <dispatcher/dispatcher.h>
 #include <logic/keyhandler/keyhandler.h>
+#include <logic/outputhandler/outputhandler.h>
 
-class StateMachine : public IDispatcherListener, public IKeyHandlerListener {
+#include "istatemachine.h"
+#include "states/istate.h"
+
+class StateMachine final : public IDispatcherListener,
+                           public IKeyHandlerListener,
+                           public IStateMachine {
 public:
-    StateMachine(/* args */);
+    StateMachine(OutputHandler& outputhandler);
     ~StateMachine();
 
     // IDispatcherListener
-    void on_dispatcher_call() override {
-        IDispatcherListener::on_dispatcher_call();
-    };
-    void set_dispatcher_period(uint32_t period_usec) override {
-        IDispatcherListener::set_dispatcher_period(period_usec);
-    }
+    void on_dispatcher_call() override;
+    void set_dispatcher_period(uint32_t period_usec) override;
 
     // IKeyHandlerListener
-    void on_key_pressed(eKeyRole, eKeyState) override{};
+    void on_key_pressed(eKeyRole, eKeyState) override;
+
+    // IStateMachine
+    void change_state(ESTATE) override;
+    InputStates get_input_states() const override;
+    void set_output_state(eOutputRole role, bool on) override;
 
 private:
-    /* data */
+    void apply_state();
+    static bool convert_input_state(eKeyState);
+
+private:
+    ESTATE m_current_state = ESTATE::Empty;
+    ESTATE m_new_state = ESTATE::Empty;
+    IState* m_state = nullptr;
+    uint32_t m_period_usec = 0;
+    InputStates m_input_states;
+    OutputHandler& m_outputhandler;
 };
-
-StateMachine::StateMachine(/* args */) {}
-
-StateMachine::~StateMachine() {}
 
 #endif  // STATE_MACHINE_H

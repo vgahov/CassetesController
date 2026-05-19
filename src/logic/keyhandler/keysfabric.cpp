@@ -1,7 +1,7 @@
 #include "keysfabric.h"
 
 const KeyFabric::RolePin KeyFabric::role_pins[KeyFabric::KEY_ROLE_COUNT] = {
-    {eKeyRole::STOP, Pin{ePORT::ePORTC, 2, true}},
+    {eKeyRole::uSTOP, Pin{ePORT::ePORTC, 2, true}},
     {eKeyRole::TransporterOn, Pin{ePORT::ePORTC, 1, true}},
     {eKeyRole::RollerDownStairs, Pin{ePORT::ePORTC, 0, true}},
     {eKeyRole::uTableChanging, Pin{ePORT::ePORTE, 3, true}},

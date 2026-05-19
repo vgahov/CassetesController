@@ -49,6 +49,9 @@ void KeyHandler::on_dispatcher_call() {
                    KeyActionDetector::CONTINUOUS_PRESSED_DELAY_MS) {
                 call_listener(eKeyState::PRESSED);
             }
+            else {
+                call_listener(eKeyState::UNPRESSED);
+            }
         }
         m_key_action_detector.is_pressed = false;
         m_key_action_detector.pressed_state_duration_msec = 0;
