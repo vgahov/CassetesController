@@ -63,14 +63,14 @@ void TableChangingState::on_table_back_down() {
         m_current_substate->on_table_back_down();
     }
 }
-void TableChangingState::on_stop_pressed() {
+void TableChangingState::stop_pressed() {
     if(m_current_substate) {
-        m_current_substate->on_stop_pressed();
+        m_current_substate->stop_pressed();
     }
 }
-void TableChangingState::on_stop_released() {
+void TableChangingState::stop_released() {
     if(m_current_substate) {
-        m_current_substate->on_stop_released();
+        m_current_substate->stop_released();
     }
 }
 

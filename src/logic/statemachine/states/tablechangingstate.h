@@ -40,8 +40,8 @@ private:
     void on_table_back_up() override;
     void on_table_back_down() override;
 
-    void on_stop_pressed() override;
-    void on_stop_released() override;
+    void stop_pressed() override;
+    void stop_released() override;
 
     void check_initial_conditions();
     void put_substate(size_t index, ETableChangingSubState sub_state) {

@@ -14,13 +14,13 @@ private:
     // void move_cassete_down() override;
     void on_cassete_up() override;
     void on_cassete_down() override;
-    void move_table_front() override;
-    void move_table_back() override;
+    void move_table_front_pressed() override;
+    void move_table_back_pressed() override;
     void on_table_front() override;
     // void on_table_back() override;
     void pause() override;
-    void on_stop_pressed() override;
-    void on_stop_released() override;
+    void stop_pressed() override;
+    void stop_released() override;
     void on_error() override;
     void update() override;
 };

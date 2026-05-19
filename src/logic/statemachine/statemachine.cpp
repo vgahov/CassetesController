@@ -54,10 +54,10 @@ void StateMachine::on_key_pressed(eKeyRole key_role, eKeyState key_state) {
     switch(key_role) {
         case eKeyRole::uSTOP:
             if(input_state) {
-                mptr = &IState::on_stop_pressed;
+                mptr = &IState::stop_pressed;
             }
             else {
-                mptr = &IState::on_stop_released;
+                mptr = &IState::stop_released;
             }
             m_input_states.uSTOP = input_state;
             break;
@@ -66,11 +66,11 @@ void StateMachine::on_key_pressed(eKeyRole key_role, eKeyState key_state) {
             m_input_states.uTableChanging = input_state;
             break;
         case eKeyRole::uTableBack:
-            mptr = &IState::move_table_back;
+            mptr = &IState::move_table_back_pressed;
             m_input_states.uTableBack = input_state;
             break;
         case eKeyRole::uTableForward:
-            mptr = &IState::move_table_front;
+            mptr = &IState::move_table_front_pressed;
             m_input_states.uTableForward = input_state;
             break;
         case eKeyRole::sCassetteDownStairs:
