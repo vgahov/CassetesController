@@ -9,6 +9,7 @@ void TableBackState::move_table_back() {}
 void TableBackState::on_table_front() {}
 // void TableBackState::on_table_back() {}
 void TableBackState::pause() {}
-void TableBackState::stop() {}
+void TableBackState::on_stop_pressed() {}
+void TableBackState::on_stop_released() {}
 void TableBackState::on_error() {}
 void TableBackState::update() {};

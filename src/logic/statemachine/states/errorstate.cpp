@@ -18,5 +18,6 @@ void ErrorState::check_for_valid_state() {
 
     if(::check_for_valid_state(input_states) && m_state_machine) {
         m_state_machine->change_state(ESTATE::Wait);
+        m_state_machine->set_output_state(eOutputRole::INDICATION_READY, true);
     }
 }

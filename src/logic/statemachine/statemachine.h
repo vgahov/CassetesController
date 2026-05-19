@@ -31,6 +31,8 @@ private:
     void apply_state();
     static bool convert_input_state(eKeyState);
 
+    void detect_error();
+
 private:
     ESTATE m_current_state = ESTATE::Empty;
     ESTATE m_new_state = ESTATE::Empty;

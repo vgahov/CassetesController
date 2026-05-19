@@ -4,6 +4,7 @@
 #include "states/casseteupstate.h"
 #include "states/detectionstate.h"
 #include "states/errorstate.h"
+#include "states/helpers/helpers.h"
 #include "states/istate.h"
 #include "states/tablebackstate.h"
 #include "states/tablechangingstate.h"
@@ -22,6 +23,7 @@ void StateMachine::on_dispatcher_call() {
     if(m_state) {
         m_state->update();
         apply_state();
+        detect_error();
     }
 }
 
@@ -51,7 +53,12 @@ void StateMachine::on_key_pressed(eKeyRole key_role, eKeyState key_state) {
 
     switch(key_role) {
         case eKeyRole::uSTOP:
-            mptr = &IState::stop;
+            if(input_state) {
+                mptr = &IState::on_stop_pressed;
+            }
+            else {
+                mptr = &IState::on_stop_released;
+            }
             m_input_states.uSTOP = input_state;
             break;
         case eKeyRole::uTableChanging:
@@ -151,5 +158,11 @@ void StateMachine::apply_state() {
 
     if(m_state) {
         m_current_state = m_new_state;
+    }
+}
+
+void StateMachine::detect_error() {
+    if(!::check_for_valid_state(m_input_states) && m_state) {
+        m_state->on_error();
     }
 }

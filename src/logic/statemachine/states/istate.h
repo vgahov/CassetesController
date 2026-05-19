@@ -5,11 +5,9 @@ class IStateMachine;
 
 class IState {
 public:
-    IState(IStateMachine* state_machine) : m_state_machine(state_machine) {}
+    IState(IStateMachine* state_machine);
     virtual ~IState() = default;
 
-    // virtual void move_cassete_up() {}
-    // virtual void move_cassete_down() {}
     virtual void on_cassete_up() {}
     virtual void on_cassete_down() {}
 
@@ -21,7 +19,8 @@ public:
     virtual void on_table_back_down() {}
 
     virtual void pause() {}
-    virtual void stop() {}
+    virtual void on_stop_pressed() {}
+    virtual void on_stop_released() {}
     virtual void on_error() {}
 
     virtual void update() {}
