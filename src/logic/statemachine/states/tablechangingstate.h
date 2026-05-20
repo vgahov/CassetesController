@@ -23,13 +23,15 @@ private:
     void change_state(ESTATE state) override;
     InputStates get_input_states() const override;
     void set_output_state(eOutputRole role, bool on) override;
+    void clear_output_states() override;
 
     enum class ETableChangingSubState {
         None,
         CasseteToDown,
         CasseteToUp,
         TableToFront,
-        TableToBack,
+        TableToBackDown,
+        TableToBackUp,
         COUNT,
     };
     // void move_cassete_up() override;

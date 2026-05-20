@@ -26,12 +26,16 @@ public:
     void change_state(ESTATE) override;
     InputStates get_input_states() const override;
     void set_output_state(eOutputRole role, bool on) override;
+    void clear_output_states() override;
 
 private:
     void apply_state();
     static bool convert_input_state(eKeyState);
 
     void detect_error();
+    bool check_for_control(ESTATE) const;
+
+    void handle_led();
 
 private:
     ESTATE m_current_state = ESTATE::Empty;
@@ -40,6 +44,11 @@ private:
     uint32_t m_period_usec = 0;
     InputStates m_input_states;
     OutputHandler& m_outputhandler;
+
+    static constexpr uint32_t LED_PERIOD_MSEC = 500;
+
+    Pin m_led_pin{ePORT::ePORTB, 4, false};
+    uint32_t m_led_timer = 0;
 };
 
 #endif  // STATE_MACHINE_H

@@ -4,7 +4,8 @@
 
 #include "cassetedownstate.h"
 #include "casseteupstate.h"
-#include "tablebackstate.h"
+#include "tablebackdownstate.h"
+#include "tablebackupstate.h"
 #include "tablefrontstate.h"
 
 void TableChangingState::change_state(ESTATE state) {
@@ -35,6 +36,12 @@ InputStates TableChangingState::get_input_states() const {
 void TableChangingState::set_output_state(eOutputRole role, bool on) {
     if(m_state_machine) {
         m_state_machine->set_output_state(role, on);
+    }
+}
+
+void TableChangingState::clear_output_states() {
+    if(m_state_machine) {
+        m_state_machine->clear_output_states();
     }
 }
 
@@ -104,7 +111,7 @@ void TableChangingState::check_initial_conditions() {
         if(input_states.sTableBackDown && !input_states.sTableBackUp &&
            input_states.sTableFront) {
             put_substate(0, ETableChangingSubState::CasseteToDown);
-            put_substate(1, ETableChangingSubState::TableToBack);
+            put_substate(1, ETableChangingSubState::TableToBackUp);
             put_substate(2, ETableChangingSubState::CasseteToUp);
             put_substate(3, ETableChangingSubState::TableToFront);
             put_substate(4, ETableChangingSubState::None);
@@ -116,7 +123,7 @@ void TableChangingState::check_initial_conditions() {
         // the cassete
         if(!input_states.sTableBackDown && input_states.sTableBackUp &&
            input_states.sTableFront) {
-            put_substate(0, ETableChangingSubState::TableToBack);
+            put_substate(0, ETableChangingSubState::TableToBackDown);
             put_substate(1, ETableChangingSubState::CasseteToDown);
             put_substate(2, ETableChangingSubState::TableToFront);
             put_substate(3, ETableChangingSubState::None);
@@ -146,7 +153,7 @@ void TableChangingState::check_initial_conditions() {
         // the cassete
         if(input_states.sTableBackDown && !input_states.sTableBackUp &&
            input_states.sTableFront) {
-            put_substate(0, ETableChangingSubState::TableToBack);
+            put_substate(0, ETableChangingSubState::TableToBackUp);
             put_substate(1, ETableChangingSubState::CasseteToUp);
             put_substate(2, ETableChangingSubState::TableToFront);
             put_substate(3, ETableChangingSubState::None);
@@ -160,7 +167,7 @@ void TableChangingState::check_initial_conditions() {
         if(input_states.sTableBackDown && !input_states.sTableBackUp &&
            input_states.sTableFront) {
             put_substate(0, ETableChangingSubState::CasseteToUp);
-            put_substate(1, ETableChangingSubState::TableToBack);
+            put_substate(1, ETableChangingSubState::TableToBackUp);
             put_substate(2, ETableChangingSubState::CasseteToDown);
             put_substate(3, ETableChangingSubState::TableToFront);
             put_substate(4, ETableChangingSubState::CasseteToUp);
@@ -169,6 +176,7 @@ void TableChangingState::check_initial_conditions() {
     }
 
     if(should_be_started) {
+        trigger_substate();
     }
 }
 
@@ -180,16 +188,19 @@ void TableChangingState::trigger_substate() {
         case ETableChangingSubState::None:
             break;
         case ETableChangingSubState::CasseteToDown:
-            m_current_substate = new CasseteDownState(this);
+            m_current_substate = new CasseteDownState(this, false);
             break;
         case ETableChangingSubState::CasseteToUp:
-            m_current_substate = new CasseteUpState(this);
+            m_current_substate = new CasseteUpState(this, false);
             break;
         case ETableChangingSubState::TableToFront:
             m_current_substate = new TableFrontState(this);
             break;
-        case ETableChangingSubState::TableToBack:
-            m_current_substate = new TableBackState(this);
+        case ETableChangingSubState::TableToBackDown:
+            m_current_substate = new TableBackDownState(this);
+            break;
+        case ETableChangingSubState::TableToBackUp:
+            m_current_substate = new TableBackUpState(this);
             break;
         default:
             break;

@@ -11,7 +11,7 @@
 #include "dispatcherlistener.h"
 
 class Dispatcher : public ITimerListener, public IDispatcher {
-    static constexpr uint32_t LISTENERS_NUMBER = 10;
+    static constexpr uint32_t LISTENERS_NUMBER = 20;
 
 public:
     // ITimerListener

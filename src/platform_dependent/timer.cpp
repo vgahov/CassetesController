@@ -159,7 +159,7 @@ void Timer0::run_callback() {
     }
 
     if(run_callback) {
-        PORTB ^= (1 << PB4);
+        // It can be checked if the callback is called
     }
 
     if(m_timer_callback && run_callback) {

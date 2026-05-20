@@ -8,6 +8,7 @@ OutputHandler::RolePin
         {eOutputRole::TABLE_CHANGING_INDICATION, Pin{ePORT::ePORTC, 7, false}},
         {eOutputRole::TRANSPORTER_STOP, Pin{ePORT::ePORTC, 6, false}},
         {eOutputRole::TRANSPORTER_INDICATION, Pin{ePORT::ePORTC, 5, false}},
+        {eOutputRole::INDICATION_READY, Pin{ePORT::ePORTC, 4, false}},
         {eOutputRole::CASSETTE_DOWN_STAIRS, Pin{ePORT::ePORTB, 3, false}},
         {eOutputRole::CASSETTE_UP_STAIRS, Pin{ePORT::ePORTB, 2, false}},
         {eOutputRole::OIL_PUMP, Pin{ePORT::ePORTB, 1, false}},

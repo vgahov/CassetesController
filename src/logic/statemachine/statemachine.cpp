@@ -1,12 +1,15 @@
 #include "statemachine.h"
 
+#include <avr/interrupt.h>
+
 #include "states/cassetedownstate.h"
 #include "states/casseteupstate.h"
 #include "states/detectionstate.h"
 #include "states/errorstate.h"
 #include "states/helpers/helpers.h"
 #include "states/istate.h"
-#include "states/tablebackstate.h"
+#include "states/tablebackdownstate.h"
+#include "states/tablebackupstate.h"
 #include "states/tablechangingstate.h"
 #include "states/tablefrontstate.h"
 #include "states/waitstate.h"
@@ -25,6 +28,7 @@ void StateMachine::on_dispatcher_call() {
         apply_state();
         detect_error();
     }
+    handle_led();
 }
 
 void StateMachine::set_dispatcher_period(uint32_t period_usec) {
@@ -44,6 +48,8 @@ InputStates StateMachine::get_input_states() const { return m_input_states; }
 void StateMachine::set_output_state(eOutputRole role, bool on) {
     m_outputhandler.set_role_state(role, on);
 }
+
+void StateMachine::clear_output_states() { m_outputhandler.clear_all(); }
 
 // IKeyHandlerListener
 void StateMachine::on_key_pressed(eKeyRole key_role, eKeyState key_state) {
@@ -123,18 +129,23 @@ void StateMachine::apply_state() {
     if(m_current_state == m_new_state) {
         return;
     }
-    m_state->~IState();
-    delete m_state;
-    m_state = nullptr;
+
+    if(m_state) {
+        m_state->~IState();
+        delete m_state;
+        m_state = nullptr;
+    }
+
+    const bool has_control = check_for_control(m_new_state);
 
     switch(m_new_state) {
         case ESTATE::Empty:
             break;
         case ESTATE::CasseteDown:
-            m_state = new CasseteDownState(this);
+            m_state = new CasseteDownState(this, has_control);
             break;
         case ESTATE::CasseteUp:
-            m_state = new CasseteUpState(this);
+            m_state = new CasseteUpState(this, has_control);
             break;
         case ESTATE::Detection:
             m_state = new DetectionState(this, m_period_usec);
@@ -142,8 +153,11 @@ void StateMachine::apply_state() {
         case ESTATE::Error:
             m_state = new ErrorState(this);
             break;
-        case ESTATE::TableBack:
-            m_state = new TableBackState(this);
+        case ESTATE::TableBackDown:
+            m_state = new TableBackDownState(this);
+            break;
+        case ESTATE::TableBackUp:
+            m_state = new TableBackUpState(this);
             break;
         case ESTATE::TableChanging:
             m_state = new TableChangingState(this);
@@ -164,5 +178,24 @@ void StateMachine::apply_state() {
 void StateMachine::detect_error() {
     if(!::check_for_valid_state(m_input_states) && m_state) {
         m_state->on_error();
+    }
+}
+
+bool StateMachine::check_for_control(ESTATE state) const {
+    switch(state) {
+        case ESTATE::CasseteDown:
+        case ESTATE::CasseteUp:
+            return m_input_states.uSTOP && m_input_states.uTableChanging &&
+                   ::check_for_valid_state(m_input_states);
+        default:
+            return false;
+    }
+}
+
+void StateMachine::handle_led() {
+    m_led_timer += m_period_usec;
+    if(m_led_timer >= LED_PERIOD_MSEC * 1000) {
+        m_led_timer = 0;
+        m_led_pin.toggle();
     }
 }

@@ -11,7 +11,8 @@ enum class ESTATE {
     CasseteUp,
     Detection,
     Error,
-    TableBack,
+    TableBackDown,
+    TableBackUp,
     TableChanging,
     TableFront,
     Wait,
@@ -69,6 +70,7 @@ public:
     virtual void change_state(ESTATE state);
     virtual InputStates get_input_states() const;
     virtual void set_output_state(eOutputRole role, bool on);
+    virtual void clear_output_states();
 };
 
 #endif  // ISTATE_MACHINE_H

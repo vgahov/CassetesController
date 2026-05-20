@@ -1,14 +1,14 @@
-#ifndef TABLE_FRONT_STATE_H
-#define TABLE_FRONT_STATE_H
+#ifndef TABLE_BACKUP_STATE_H
+#define TABLE_BACKUP_STATE_H
 
 #include "istate.h"
 #include "statehelper.h"
 
 class IStateMachine;
 
-class TableFrontState final : public StateHelper {
+class TableBackUpState final : public StateHelper {
 public:
-    TableFrontState(IStateMachine* state_machine)
+    TableBackUpState(IStateMachine* state_machine)
         : StateHelper(state_machine) {}
 
 private:
@@ -20,4 +20,4 @@ private:
     void stop_pressed() override;
 };
 
-#endif  // TABLE_FRONT_STATE_H
+#endif  // TABLE_BACKUP_STATE_H
