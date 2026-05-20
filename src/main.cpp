@@ -1,7 +1,3 @@
-#ifndef F_CPU
-#define F_CPU 1000000UL
-#endif
-
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/wdt.h>
@@ -11,7 +7,7 @@
 #include <logic/statemachine/statemachine.h>
 #include <util/delay.h>
 
-static constexpr uint32_t TIMER_PERIOD_USEC = 1000;
+static constexpr uint32_t TIMER_PERIOD_USEC = 5000;
 
 int main(void) {
     wdt_disable();
@@ -24,9 +20,8 @@ int main(void) {
 
     auto& output_handler = OutputHandler::get_instance();
     StateMachine state_machine(output_handler);
-    // KeyFabric::init(dispatcher, state_machine);
+    KeyFabric::init(dispatcher, state_machine);
     dispatcher.add_listener(&state_machine, 10, ePeriodUnit::mSec);
-    // dispatcher.set_timer_period(TIMER_PERIOD_USEC);
 
     sei();
 

@@ -129,7 +129,7 @@ bool Pin::get_direction(ePORT port, uint8_t pin) {
         case ePORT::ePORTD:
             result = get_binary_value(DDRD, pin);
             break;
-#if(ATMEGA328PB)
+#if defined(__AVR_ATmega328PB__) || defined(__AVR_ATmega324PB__)
         case ePORT::ePORTE:
             result = get_binary_value(DDRE, pin);
             break;
@@ -153,7 +153,7 @@ bool Pin::read_pin(ePORT port, uint8_t pin) {
         case ePORT::ePORTD:
             result = get_binary_value(PIND, pin);
             break;
-#if(ATMEGA328PB)
+#if defined(__AVR_ATmega328PB__) || defined(__AVR_ATmega324PB__)
         case ePORT::ePORTE:
             result = get_binary_value(PINE, pin);
             break;
@@ -176,7 +176,7 @@ void Pin::set_output(ePORT port, uint8_t pin) {
         case ePORT::ePORTD:
             PORTD = set_binary_value(PORTD, pin, eOutputAction::SET);
             break;
-#if(ATMEGA328PB)
+#if defined(__AVR_ATmega328PB__) || defined(__AVR_ATmega324PB__)
         case ePORT::ePORTE:
             PORTE = set_binary_value(PORTE, pin, eOutputAction::SET);
             break;
@@ -197,7 +197,7 @@ void Pin::clr_output(ePORT port, uint8_t pin) {
         case ePORT::ePORTD:
             PORTD = set_binary_value(PORTD, pin, eOutputAction::CLEAR);
             break;
-#if(ATMEGA328PB)
+#if defined(__AVR_ATmega328PB__) || defined(__AVR_ATmega324PB__)
         case ePORT::ePORTE:
             PORTE = set_binary_value(PORTE, pin, eOutputAction::CLEAR);
             break;
@@ -218,7 +218,7 @@ void Pin::toggle_output(ePORT port, uint8_t pin) {
         case ePORT::ePORTD:
             PORTD = set_binary_value(PORTD, pin, eOutputAction::TOGGLE);
             break;
-#if(ATMEGA328PB)
+#if defined(__AVR_ATmega328PB__) || defined(__AVR_ATmega324PB__)
         case ePORT::ePORTE:
             PORTE = set_binary_value(PORTE, pin, eOutputAction::TOGGLE);
             break;

@@ -45,7 +45,7 @@ private:
     InputStates m_input_states;
     OutputHandler& m_outputhandler;
 
-    static constexpr uint32_t LED_PERIOD_MSEC = 500;
+    static constexpr uint32_t LED_PERIOD_MSEC = 2000;
 
     Pin m_led_pin{ePORT::ePORTB, 4, false};
     uint32_t m_led_timer = 0;

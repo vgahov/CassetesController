@@ -20,9 +20,6 @@ private:
 
     static uint8_t storage[KEY_ROLE_COUNT][sizeof(KeyHandler)];
 
-    // static uint8_t s_key_fabric_object[];
-    // static KeyFabric* s_instance;
-
     static void init_key_handler(IDispatcher& dispatcher,
                                  IKeyHandlerListener& key_handler_listener) {
         for(size_t i = 0; i < KEY_ROLE_COUNT; ++i) {
@@ -31,8 +28,6 @@ private:
             KeyHandler* key_handler = new(storage[i])
                 KeyHandler(&dispatcher, role_pin.pin, role_pin.key_role,
                            &key_handler_listener);
-
-            dispatcher.add_listener(key_handler, 10, ePeriodUnit::mSec);
         }
     }
 

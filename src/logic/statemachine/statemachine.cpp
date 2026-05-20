@@ -57,6 +57,8 @@ void StateMachine::on_key_pressed(eKeyRole key_role, eKeyState key_state) {
 
     const bool input_state = convert_input_state(key_state);
 
+    m_led_pin.toggle();
+
     switch(key_role) {
         case eKeyRole::uSTOP:
             if(input_state) {
@@ -80,12 +82,10 @@ void StateMachine::on_key_pressed(eKeyRole key_role, eKeyState key_state) {
             m_input_states.uTableForward = input_state;
             break;
         case eKeyRole::sCassetteDownStairs:
-            // mptr = &IState::move_cassete_down;
             mptr = &IState::on_cassete_down;
             m_input_states.sCassetteDownStairs = input_state;
             break;
         case eKeyRole::sCassetteUpStairs:
-            // mptr = &IState::move_cassete_up;
             mptr = &IState::on_cassete_up;
             m_input_states.sCassetteUpStairs = input_state;
             break;
@@ -196,6 +196,6 @@ void StateMachine::handle_led() {
     m_led_timer += m_period_usec;
     if(m_led_timer >= LED_PERIOD_MSEC * 1000) {
         m_led_timer = 0;
-        m_led_pin.toggle();
+        // m_led_pin.toggle();
     }
 }

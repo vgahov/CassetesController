@@ -19,6 +19,7 @@ private:
     void call_listener(eKeyState action);
     bool is_ready() const;
     uint32_t get_period_increment_value_msec() const;
+    uint32_t get_period_increment_value_usec() const;
     void recalculate_increment_value_msec();
 
 private:

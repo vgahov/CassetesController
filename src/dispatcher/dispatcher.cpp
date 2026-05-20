@@ -49,7 +49,6 @@ void Dispatcher::loop() {
             continue;
         }
 
-        // PORTB |= (1 << PB4);
         for(auto& listener : m_listeners) {
             if(listener.listener) {
                 listener.current_period += m_period_usec;
