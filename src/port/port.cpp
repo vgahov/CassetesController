@@ -97,6 +97,7 @@ void Pin::set_direction(ePORT port, uint8_t pin, bool direction) {
         direction ? eOutputAction::SET : eOutputAction::CLEAR;
     switch(port) {
         case ePORT::ePORTA:
+            DDRA = set_binary_value(DDRA, pin, action);
             break;
         case ePORT::ePORTB:
             DDRB = set_binary_value(DDRB, pin, action);
@@ -119,6 +120,7 @@ bool Pin::get_direction(ePORT port, uint8_t pin) {
     bool result = false;
     switch(port) {
         case ePORT::ePORTA:
+            result = get_binary_value(DDRA, pin);
             break;
         case ePORT::ePORTB:
             result = get_binary_value(DDRB, pin);
@@ -143,6 +145,7 @@ bool Pin::read_pin(ePORT port, uint8_t pin) {
     bool result = false;
     switch(port) {
         case ePORT::ePORTA:
+            result = get_binary_value(PINA, pin);
             break;
         case ePORT::ePORTB:
             result = get_binary_value(PINB, pin);
@@ -166,6 +169,7 @@ bool Pin::read_pin(ePORT port, uint8_t pin) {
 void Pin::set_output(ePORT port, uint8_t pin) {
     switch(port) {
         case ePORT::ePORTA:
+            PORTA = set_binary_value(PORTA, pin, eOutputAction::SET);
             break;
         case ePORT::ePORTB:
             PORTB = set_binary_value(PORTB, pin, eOutputAction::SET);
@@ -187,6 +191,7 @@ void Pin::set_output(ePORT port, uint8_t pin) {
 void Pin::clr_output(ePORT port, uint8_t pin) {
     switch(port) {
         case ePORT::ePORTA:
+            PORTA = set_binary_value(PORTA, pin, eOutputAction::CLEAR);
             break;
         case ePORT::ePORTB:
             PORTB = set_binary_value(PORTB, pin, eOutputAction::CLEAR);
@@ -208,6 +213,7 @@ void Pin::clr_output(ePORT port, uint8_t pin) {
 void Pin::toggle_output(ePORT port, uint8_t pin) {
     switch(port) {
         case ePORT::ePORTA:
+            PORTA = set_binary_value(PORTA, pin, eOutputAction::TOGGLE);
             break;
         case ePORT::ePORTB:
             PORTB = set_binary_value(PORTB, pin, eOutputAction::TOGGLE);

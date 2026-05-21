@@ -71,8 +71,8 @@ void TableChangingState::on_table_back_down(bool state) {
     }
 }
 void TableChangingState::stop(bool state) {
-    if(m_current_substate) {
-        m_current_substate->stop(state);
+    if(m_state_machine) {
+        m_state_machine->change_state(ESTATE::Wait);
     }
 }
 void TableChangingState::check_initial_conditions() {
@@ -188,13 +188,13 @@ void TableChangingState::trigger_substate() {
             m_current_substate = new CasseteUpState(this, false);
             break;
         case ETableChangingSubState::TableToFront:
-            m_current_substate = new TableFrontState(this);
+            m_current_substate = new TableFrontState(this, false);
             break;
         case ETableChangingSubState::TableToBackDown:
-            m_current_substate = new TableBackDownState(this);
+            m_current_substate = new TableBackDownState(this, false);
             break;
         case ETableChangingSubState::TableToBackUp:
-            m_current_substate = new TableBackUpState(this);
+            m_current_substate = new TableBackUpState(this, false);
             break;
         default:
             break;

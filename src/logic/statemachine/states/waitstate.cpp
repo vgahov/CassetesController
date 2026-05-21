@@ -13,7 +13,9 @@ void WaitState::move_table_front(bool state) {
     if(input_states.uSTOP) {
         return;
     }
-    m_state_machine->change_state(ESTATE::TableFront);
+    if(input_states.sTableBackDown && input_states.sTableBackUp) {
+        m_state_machine->change_state(ESTATE::TableFront);
+    }
 }
 
 void WaitState::move_table_back(bool state) {
@@ -29,14 +31,16 @@ void WaitState::move_table_back(bool state) {
         return;
     }
 
-    if(!input_states.sTableBackDown) {
-        m_state_machine->change_state(ESTATE::TableBackDown);
-        return;
-    }
+    if(input_states.sTableFront) {
+        if(!input_states.sTableBackDown) {
+            m_state_machine->change_state(ESTATE::TableBackDown);
+            return;
+        }
 
-    if(!input_states.sTableBackUp) {
-        m_state_machine->change_state(ESTATE::TableBackUp);
-        return;
+        if(!input_states.sTableBackUp) {
+            m_state_machine->change_state(ESTATE::TableBackUp);
+            return;
+        }
     }
 }
 

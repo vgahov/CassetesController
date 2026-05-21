@@ -118,6 +118,8 @@ bool StateMachine::convert_input_state(eKeyState key_state) {
         case eKeyState::LONG_UNPRESSED:
             return false;
     }
+
+    return false;
 }
 
 void StateMachine::apply_state() {
@@ -153,16 +155,16 @@ void StateMachine::apply_state() {
             m_state = new ErrorState(this);
             break;
         case ESTATE::TableBackDown:
-            m_state = new TableBackDownState(this);
+            m_state = new TableBackDownState(this, has_stop_control);
             break;
         case ESTATE::TableBackUp:
-            m_state = new TableBackUpState(this);
+            m_state = new TableBackUpState(this, has_stop_control);
             break;
         case ESTATE::TableChanging:
             m_state = new TableChangingState(this);
             break;
         case ESTATE::TableFront:
-            m_state = new TableFrontState(this);
+            m_state = new TableFrontState(this, has_stop_control);
             break;
         case ESTATE::Wait:
             m_state = new WaitState(this);

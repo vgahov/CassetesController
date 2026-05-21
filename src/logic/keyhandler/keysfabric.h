@@ -25,7 +25,7 @@ private:
         for(size_t i = 0; i < KEY_ROLE_COUNT; ++i) {
             const auto& role_pin = role_pins[i];
 
-            KeyHandler* key_handler = new(storage[i])
+            /*KeyHandler* key_handler =*/new(storage[i])
                 KeyHandler(&dispatcher, role_pin.pin, role_pin.key_role,
                            &key_handler_listener);
         }
