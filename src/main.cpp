@@ -9,6 +9,9 @@
 
 static constexpr uint32_t TIMER_PERIOD_USEC = 5000;
 
+Pin m_led_pin{ePORT::ePORTB, 4, false};
+//extern Pin m_led_pin;
+
 int main(void) {
     wdt_disable();
     MCUCR |= (1 << JTD);

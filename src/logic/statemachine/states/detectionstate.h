@@ -18,7 +18,7 @@ private:
     void update() override;
 
 private:
-    static constexpr uint32_t INIT_TIME_SEC = 2;
+    static constexpr uint32_t INIT_TIME_SEC = 5;
     uint32_t m_period_usec;
     uint32_t m_passed_period_usec;
 };

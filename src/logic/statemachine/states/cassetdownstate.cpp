@@ -2,45 +2,26 @@
 
 #include "cassetedownstate.h"
 
+CasseteDownState::CasseteDownState(IStateMachine* state_machine,
+                                   bool with_control)
+    : CasseteCommonMovingState(state_machine, with_control) {
+    if(m_state_machine) {
+        m_state_machine->set_output_state(eOutputRole::OIL_PUMP, true);
+        m_state_machine->set_output_state(eOutputRole::CASSETTE_DOWN_STAIRS,
+                                          true);
+    }
+}
+
 void CasseteDownState::on_cassete_up(bool state) {
+    if(!(state || m_triggered_by_opposite_signal)) {
+        m_triggered_by_opposite_signal = true;
+        return;
+    }
     transition_to_error_state();
 }
+
 void CasseteDownState::on_cassete_down(bool state) {
+    m_state_machine->set_output_state(eOutputRole::OIL_PUMP, false);
+    m_state_machine->set_output_state(eOutputRole::CASSETTE_DOWN_STAIRS, false);
     transition_to_waiting_state();
-}
-void CasseteDownState::on_table_front(bool state) {
-    transition_to_error_if_needed();
-}
-void CasseteDownState::on_table_back_up(bool state) {
-    transition_to_error_if_needed();
-}
-void CasseteDownState::on_table_back_down(bool state) {
-    transition_to_error_if_needed();
-}
-void CasseteDownState::stop(bool state) { transition_to_waiting_state(); }
-void CasseteDownState::on_error() {
-    if(!m_state_machine) {
-        return;
-    }
-
-    const auto input_states = m_state_machine->get_input_states();
-    if(!(input_states.uSTOP && input_states.uTableChanging)) {
-        transition_to_error_state();
-    }
-}
-
-void CasseteDownState::transition_to_error_if_needed() {
-    if(!m_state_machine) {
-        return;
-    }
-
-    if(!m_with_control) {
-        transition_to_error_state();
-        return;
-    }
-
-    const auto input_states = m_state_machine->get_input_states();
-    if(!(input_states.uSTOP && input_states.uTableChanging)) {
-        transition_to_error_state();
-    }
 }

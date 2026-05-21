@@ -2,11 +2,6 @@
 
 #include <logic/statemachine/istatemachine.h>
 
-// void WaitState::move_cassete_up() {}
-// void WaitState::move_cassete_down() {};
-void WaitState::on_cassete_up(bool state) {}
-void WaitState::on_cassete_down(bool state) {}
-
 void WaitState::move_table_front(bool state) {
     if(!state) {
         return;
@@ -73,8 +68,8 @@ void WaitState::change_tables(bool state) {
 
 void WaitState::stop(bool state) {
     if(m_state_machine) {
-        m_state_machine->set_output_state(eOutputRole::INDICATION_READY,
-                                          !state);
+        // m_state_machine->set_output_state(eOutputRole::INDICATION_READY,
+        //                                   !state);
     }
 }
 

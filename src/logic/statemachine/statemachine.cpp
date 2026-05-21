@@ -14,6 +14,8 @@
 #include "states/tablefrontstate.h"
 #include "states/waitstate.h"
 
+extern Pin m_led_pin;
+
 StateMachine::StateMachine(OutputHandler& outputhandler)
     : m_state(nullptr), m_outputhandler(outputhandler) {
     m_state = nullptr;
@@ -25,9 +27,9 @@ StateMachine::~StateMachine() {}
 void StateMachine::on_dispatcher_call() {
     if(m_state) {
         m_state->update();
-        apply_state();
-        detect_error();
     }
+    apply_state();
+    detect_error();
     handle_led();
 }
 
@@ -59,44 +61,45 @@ void StateMachine::on_key_pressed(eKeyRole key_role, eKeyState key_state) {
 
     const bool input_state = convert_input_state(key_state);
 
-    m_led_pin.toggle();
-
+    // !!! m_input_states.XXX = input_state; should be before
+    // m_state->XXX(input_state) because m_state can use input states
     switch(key_role) {
         case eKeyRole::uSTOP:
-            m_state->stop(input_state);
             m_input_states.uSTOP = input_state;
+            m_state->stop(input_state);
             break;
         case eKeyRole::uTableChanging:
-            m_state->change_tables(input_state);
             m_input_states.uTableChanging = input_state;
+            m_state->change_tables(input_state);
+
             break;
         case eKeyRole::uTableBack:
-            m_state->move_table_back(input_state);
             m_input_states.uTableBack = input_state;
+            m_state->move_table_back(input_state);
             break;
         case eKeyRole::uTableForward:
-            m_state->move_table_front(input_state);
             m_input_states.uTableForward = input_state;
+            m_state->move_table_front(input_state);
             break;
         case eKeyRole::sCassetteDownStairs:
-            m_state->on_cassete_down(input_state);
             m_input_states.sCassetteDownStairs = input_state;
+            m_state->on_cassete_down(input_state);
             break;
         case eKeyRole::sCassetteUpStairs:
-            m_state->on_cassete_up(input_state);
             m_input_states.sCassetteUpStairs = input_state;
+            m_state->on_cassete_up(input_state);
             break;
         case eKeyRole::sTableBackDown:
-            m_state->on_table_back_down(input_state);
             m_input_states.sTableBackDown = input_state;
+            m_state->on_table_back_down(input_state);
             break;
         case eKeyRole::sTableBackUp:
-            m_state->on_table_back_up(input_state);
             m_input_states.sTableBackUp = input_state;
+            m_state->on_table_back_up(input_state);
             break;
         case eKeyRole::sTableFront:
-            m_state->on_table_front(input_state);
             m_input_states.sTableFront = input_state;
+            m_state->on_table_front(input_state);
             break;
         default:
             break;
@@ -128,16 +131,20 @@ void StateMachine::apply_state() {
         m_state = nullptr;
     }
 
-    const bool has_control = check_for_control(m_new_state);
+    //
+    const bool has_stop_control = check_for_stop_control(m_new_state);
+    if(has_stop_control) {
+        m_led_pin.set();
+    }
 
     switch(m_new_state) {
         case ESTATE::Empty:
             break;
         case ESTATE::CasseteDown:
-            m_state = new CasseteDownState(this, has_control);
+            m_state = new CasseteDownState(this, has_stop_control);
             break;
         case ESTATE::CasseteUp:
-            m_state = new CasseteUpState(this, has_control);
+            m_state = new CasseteUpState(this, has_stop_control);
             break;
         case ESTATE::Detection:
             m_state = new DetectionState(this, m_period_usec);
@@ -173,12 +180,12 @@ void StateMachine::detect_error() {
     }
 }
 
-bool StateMachine::check_for_control(ESTATE state) const {
+bool StateMachine::check_for_stop_control(ESTATE state) const {
     switch(state) {
         case ESTATE::CasseteDown:
         case ESTATE::CasseteUp:
             return m_input_states.uSTOP && m_input_states.uTableChanging &&
-                   ::check_for_valid_state(m_input_states);
+                   !::check_for_valid_state(m_input_states);
         default:
             return false;
     }

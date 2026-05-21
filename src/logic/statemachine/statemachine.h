@@ -33,7 +33,7 @@ private:
     static bool convert_input_state(eKeyState);
 
     void detect_error();
-    bool check_for_control(ESTATE) const;
+    bool check_for_stop_control(ESTATE) const;
 
     void handle_led();
 
@@ -47,7 +47,7 @@ private:
 
     static constexpr uint32_t LED_PERIOD_MSEC = 2000;
 
-    Pin m_led_pin{ePORT::ePORTB, 4, false};
+    // Pin m_led_pin{ePORT::ePORTB, 4, false};
     uint32_t m_led_timer = 0;
 };
 

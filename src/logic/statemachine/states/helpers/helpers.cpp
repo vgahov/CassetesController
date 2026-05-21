@@ -1,8 +1,10 @@
 #include "helpers.h"
 
+#include <avr/io.h>
+
 // Check the cassete state/position
 bool is_cassete_valid(const InputStates& input_states) {
-    return input_states.sCassetteDownStairs || input_states.sCassetteUpStairs;
+    return input_states.sCassetteDownStairs != input_states.sCassetteUpStairs;
 }
 
 // Check the tables states
@@ -12,7 +14,7 @@ bool is_cassete_valid(const InputStates& input_states) {
 // In general - 2 of 3 should be true
 bool are_tables_valid(const InputStates& input_states) {
     return (input_states.sTableBackDown + input_states.sTableBackUp +
-                input_states.sTableFront >=
+                input_states.sTableFront ==
             2);
 }
 

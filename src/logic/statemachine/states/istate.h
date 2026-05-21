@@ -1,6 +1,9 @@
 #ifndef ISTATE_H
 #define ISTATE_H
 
+#include <port/port.h>
+extern Pin m_led_pin;
+
 class IStateMachine;
 
 class IState {
@@ -8,8 +11,8 @@ public:
     IState(IStateMachine* state_machine);
     virtual ~IState() = default;
 
-    virtual void move_cassete_up(bool state) {}
-    virtual void move_cassete_down(bool state) {}
+    // virtual void move_cassete_up(bool state) {}
+    // virtual void move_cassete_down(bool state) {}
     virtual void on_cassete_up(bool state) {}
     virtual void on_cassete_down(bool state) {}
 
