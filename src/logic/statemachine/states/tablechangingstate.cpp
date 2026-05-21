@@ -45,42 +45,36 @@ void TableChangingState::clear_output_states() {
     }
 }
 
-void TableChangingState::on_cassete_up() {
+void TableChangingState::on_cassete_up(bool state) {
     if(m_current_substate) {
-        m_current_substate->on_cassete_up();
+        m_current_substate->on_cassete_up(state);
     }
 }
-void TableChangingState::on_cassete_down() {
+void TableChangingState::on_cassete_down(bool state) {
     if(m_current_substate) {
-        m_current_substate->on_cassete_down();
+        m_current_substate->on_cassete_down(state);
     }
 }
-void TableChangingState::on_table_front() {
+void TableChangingState::on_table_front(bool state) {
     if(m_current_substate) {
-        m_current_substate->on_table_front();
+        m_current_substate->on_table_front(state);
     }
 }
-void TableChangingState::on_table_back_up() {
+void TableChangingState::on_table_back_up(bool state) {
     if(m_current_substate) {
-        m_current_substate->on_table_back_up();
+        m_current_substate->on_table_back_up(state);
     }
 }
-void TableChangingState::on_table_back_down() {
+void TableChangingState::on_table_back_down(bool state) {
     if(m_current_substate) {
-        m_current_substate->on_table_back_down();
+        m_current_substate->on_table_back_down(state);
     }
 }
-void TableChangingState::stop_pressed() {
+void TableChangingState::stop(bool state) {
     if(m_current_substate) {
-        m_current_substate->stop_pressed();
+        m_current_substate->stop(state);
     }
 }
-void TableChangingState::stop_released() {
-    if(m_current_substate) {
-        m_current_substate->stop_released();
-    }
-}
-
 void TableChangingState::check_initial_conditions() {
     if(!m_state_machine) {
         return;

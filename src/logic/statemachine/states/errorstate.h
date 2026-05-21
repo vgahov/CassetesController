@@ -52,12 +52,12 @@ private:
 
         virtual void update() {}
     */
-    void on_cassete_up() override;
-    void on_cassete_down() override;
+    void on_cassete_up(bool state) override;
+    void on_cassete_down(bool state) override;
 
-    void on_table_front() override;
-    void on_table_back_up() override;
-    void on_table_back_down() override;
+    void on_table_front(bool state) override;
+    void on_table_back_up(bool state) override;
+    void on_table_back_down(bool state) override;
 
     void update() override;
 

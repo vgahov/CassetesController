@@ -8,25 +8,20 @@ public:
     IState(IStateMachine* state_machine);
     virtual ~IState() = default;
 
-    virtual void move_cassete_up_pressed() {}
-    virtual void move_cassete_up_released() {}
-    virtual void move_cassete_down_pressed() {}
-    virtual void move_cassete_down_released() {}
-    virtual void on_cassete_up() {}
-    virtual void on_cassete_down() {}
+    virtual void move_cassete_up(bool state) {}
+    virtual void move_cassete_down(bool state) {}
+    virtual void on_cassete_up(bool state) {}
+    virtual void on_cassete_down(bool state) {}
 
-    virtual void change_tables() {}
-    virtual void move_table_front_pressed() {}
-    virtual void move_table_front_released() {}
-    virtual void move_table_back_pressed() {}
-    virtual void move_table_back_released() {}
-    virtual void on_table_front() {}
-    virtual void on_table_back_up() {}
-    virtual void on_table_back_down() {}
+    virtual void change_tables(bool state) {}
+    virtual void move_table_front(bool state) {}
+    virtual void move_table_back(bool state) {}
+    virtual void on_table_front(bool state) {}
+    virtual void on_table_back_up(bool state) {}
+    virtual void on_table_back_down(bool state) {}
 
     virtual void pause() {}
-    virtual void stop_pressed() {}
-    virtual void stop_released() {}
+    virtual void stop(bool state) {}
     virtual void on_error() {}
 
     virtual void update() {}

@@ -4,10 +4,13 @@
 
 // void WaitState::move_cassete_up() {}
 // void WaitState::move_cassete_down() {};
-void WaitState::on_cassete_up() {}
-void WaitState::on_cassete_down() {}
+void WaitState::on_cassete_up(bool state) {}
+void WaitState::on_cassete_down(bool state) {}
 
-void WaitState::move_table_front_pressed() {
+void WaitState::move_table_front(bool state) {
+    if(!state) {
+        return;
+    }
     if(!m_state_machine) {
         return;
     }
@@ -18,7 +21,10 @@ void WaitState::move_table_front_pressed() {
     m_state_machine->change_state(ESTATE::TableFront);
 }
 
-void WaitState::move_table_back_pressed() {
+void WaitState::move_table_back(bool state) {
+    if(!state) {
+        return;
+    }
     if(!m_state_machine) {
         return;
     }
@@ -39,7 +45,10 @@ void WaitState::move_table_back_pressed() {
     }
 }
 
-void WaitState::change_tables() {
+void WaitState::change_tables(bool state) {
+    if(!state) {
+        return;
+    }
     if(!m_state_machine) {
         return;
     }
@@ -62,15 +71,10 @@ void WaitState::change_tables() {
     m_state_machine->change_state(ESTATE::TableChanging);
 }
 
-void WaitState::stop_pressed() {
+void WaitState::stop(bool state) {
     if(m_state_machine) {
-        m_state_machine->set_output_state(eOutputRole::INDICATION_READY, false);
-    }
-}
-
-void WaitState::stop_released() {
-    if(m_state_machine) {
-        m_state_machine->set_output_state(eOutputRole::INDICATION_READY, true);
+        m_state_machine->set_output_state(eOutputRole::INDICATION_READY,
+                                          !state);
     }
 }
 

@@ -1,12 +1,21 @@
 #include "casseteupstate.h"
 
-void CasseteUpState::on_cassete_up() { transition_to_waiting_state(); }
-void CasseteUpState::on_cassete_down() { transition_to_error_if_needed(); }
-void CasseteUpState::on_table_front() { transition_to_error_if_needed(); }
-void CasseteUpState::on_table_back_up() { transition_to_error_if_needed(); }
-void CasseteUpState::on_table_back_down() { transition_to_error_if_needed(); }
-void CasseteUpState::stop_pressed() { transition_to_waiting_state(); }
-void CasseteUpState::stop_released() { transition_to_waiting_state(); }
+void CasseteUpState::on_cassete_up(bool state) {
+    transition_to_waiting_state();
+}
+void CasseteUpState::on_cassete_down(bool state) {
+    transition_to_error_if_needed();
+}
+void CasseteUpState::on_table_front(bool state) {
+    transition_to_error_if_needed();
+}
+void CasseteUpState::on_table_back_up(bool state) {
+    transition_to_error_if_needed();
+}
+void CasseteUpState::on_table_back_down(bool state) {
+    transition_to_error_if_needed();
+}
+void CasseteUpState::stop(bool state) { transition_to_waiting_state(); }
 void CasseteUpState::transition_to_error_if_needed() {
     if(!m_state_machine) {
         return;

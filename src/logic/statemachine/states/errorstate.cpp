@@ -4,12 +4,12 @@
 
 #include "helpers/helpers.h"
 
-void ErrorState::on_cassete_up() {}
-void ErrorState::on_cassete_down() {}
+void ErrorState::on_cassete_up(bool state) {}
+void ErrorState::on_cassete_down(bool state) {}
 
-void ErrorState::on_table_front() {}
-void ErrorState::on_table_back_up() {}
-void ErrorState::on_table_back_down() {}
+void ErrorState::on_table_front(bool state) {}
+void ErrorState::on_table_back_up(bool state) {}
+void ErrorState::on_table_back_down(bool state) {}
 
 void ErrorState::update() {}
 

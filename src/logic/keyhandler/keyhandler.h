@@ -34,8 +34,8 @@ private:
         static constexpr uint32_t LONG_PRESSED_DELAY_MS = 3000;
         static constexpr uint32_t CONTINUOUS_PRESSED_DELAY_MS = 1500;
 
-        uint32_t pressed_state_duration_msec = 0;
-        eKeyState key_state = eKeyState::LONG_UNPRESSED;
+        // uint32_t pressed_state_duration_msec = 0;
+        // eKeyState key_state = eKeyState::LONG_UNPRESSED;
         bool is_pressed = false;
     };
 

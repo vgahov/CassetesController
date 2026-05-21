@@ -53,7 +53,9 @@ void StateMachine::clear_output_states() { m_outputhandler.clear_all(); }
 
 // IKeyHandlerListener
 void StateMachine::on_key_pressed(eKeyRole key_role, eKeyState key_state) {
-    void (IState::*mptr)() = nullptr;
+    if(!m_state) {
+        return;
+    }
 
     const bool input_state = convert_input_state(key_state);
 
@@ -61,54 +63,44 @@ void StateMachine::on_key_pressed(eKeyRole key_role, eKeyState key_state) {
 
     switch(key_role) {
         case eKeyRole::uSTOP:
-            if(input_state) {
-                mptr = &IState::stop_pressed;
-            }
-            else {
-                mptr = &IState::stop_released;
-            }
+            m_state->stop(input_state);
             m_input_states.uSTOP = input_state;
             break;
         case eKeyRole::uTableChanging:
-            mptr = &IState::change_tables;
+            m_state->change_tables(input_state);
             m_input_states.uTableChanging = input_state;
             break;
         case eKeyRole::uTableBack:
-            mptr = &IState::move_table_back_pressed;
+            m_state->move_table_back(input_state);
             m_input_states.uTableBack = input_state;
             break;
         case eKeyRole::uTableForward:
-            mptr = &IState::move_table_front_pressed;
+            m_state->move_table_front(input_state);
             m_input_states.uTableForward = input_state;
             break;
         case eKeyRole::sCassetteDownStairs:
-            mptr = &IState::on_cassete_down;
+            m_state->on_cassete_down(input_state);
             m_input_states.sCassetteDownStairs = input_state;
             break;
         case eKeyRole::sCassetteUpStairs:
-            mptr = &IState::on_cassete_up;
+            m_state->on_cassete_up(input_state);
             m_input_states.sCassetteUpStairs = input_state;
             break;
         case eKeyRole::sTableBackDown:
-            mptr = &IState::on_table_back_down;
+            m_state->on_table_back_down(input_state);
             m_input_states.sTableBackDown = input_state;
             break;
         case eKeyRole::sTableBackUp:
-            mptr = &IState::on_table_back_up;
+            m_state->on_table_back_up(input_state);
             m_input_states.sTableBackUp = input_state;
             break;
         case eKeyRole::sTableFront:
-            mptr = &IState::on_table_front;
+            m_state->on_table_front(input_state);
             m_input_states.sTableFront = input_state;
             break;
         default:
             break;
     }
-
-    if(m_state && mptr) {
-        (m_state->*mptr)();
-    }
-
     apply_state();
 }
 

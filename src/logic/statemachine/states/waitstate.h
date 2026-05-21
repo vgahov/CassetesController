@@ -14,13 +14,12 @@ public:
     }
 
 private:
-    void on_cassete_up() override;
-    void on_cassete_down() override;
-    void move_table_front_pressed() override;
-    void move_table_back_pressed() override;
-    void change_tables() override;
-    void stop_pressed() override;
-    void stop_released() override;
+    void on_cassete_up(bool state) override;
+    void on_cassete_down(bool state) override;
+    void move_table_front(bool state) override;
+    void move_table_back(bool state) override;
+    void change_tables(bool state) override;
+    void stop(bool state) override;
     void on_error() override;
     void update() override;
 
