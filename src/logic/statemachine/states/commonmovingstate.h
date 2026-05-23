@@ -31,6 +31,8 @@ protected:
     using StatesToStopList = StatesToStop[MAX_STATES_TO_STOP];
     void native_signal_triggered(bool state,
                                  const StatesToStopList& states_to_stop);
+
+    void clear_output_signals(const StatesToStopList& states_to_stop);
     // void native_signal_triggered(bool state, StatesToStop
     // (&states_to_stop)[2]);
 

@@ -23,7 +23,7 @@ Pin::Pin(ePORT port, int pin, bool input)
 }
 
 Pin::~Pin() {
-    if(m_reference_counter && --m_reference_counter == 0) {
+    if(m_reference_counter && --(*m_reference_counter) == 0) {
         set_as_input();
         delete m_reference_counter;
         m_reference_counter = nullptr;
@@ -38,7 +38,7 @@ Pin &Pin::operator=(const Pin &other) {
     this->~Pin();
     m_reference_counter = other.m_reference_counter;
     if(m_reference_counter) {
-        ++m_reference_counter;
+        ++(*m_reference_counter);
     }
     m_port = other.m_port;
     m_pin = other.m_pin;

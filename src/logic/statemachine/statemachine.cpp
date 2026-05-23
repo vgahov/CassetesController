@@ -12,12 +12,15 @@
 #include "states/tablebackupstate.h"
 #include "states/tablechangingstate.h"
 #include "states/tablefrontstate.h"
+#include "states/transporterstate.h"
 #include "states/waitstate.h"
 
 extern Pin m_led_pin;
 
 StateMachine::StateMachine(OutputHandler& outputhandler)
-    : m_state(nullptr), m_outputhandler(outputhandler) {
+    : m_state(nullptr),
+      m_outputhandler(outputhandler),
+      m_transport_state(this) {
     m_state = nullptr;
 }
 
@@ -28,6 +31,7 @@ void StateMachine::on_dispatcher_call() {
     if(m_state) {
         m_state->update();
     }
+    m_transport_state.update();
     apply_state();
     detect_error();
     handle_led();
@@ -37,6 +41,7 @@ void StateMachine::set_dispatcher_period(uint32_t period_usec) {
     m_period_usec = period_usec;
     m_current_state = ESTATE::Empty;
     m_new_state = ESTATE::Detection;
+    m_transport_state.set_period(period_usec);
     apply_state();
 }
 
@@ -61,17 +66,20 @@ void StateMachine::on_key_pressed(eKeyRole key_role, eKeyState key_state) {
 
     const bool input_state = convert_input_state(key_state);
 
-    // !!! m_input_states.XXX = input_state; should be before
-    // m_state->XXX(input_state) because m_state can use input states
     switch(key_role) {
         case eKeyRole::uSTOP:
             m_input_states.uSTOP = input_state;
-            m_state->stop(input_state);
+            if(m_state) {
+                m_state->stop(input_state);
+            }
+            m_transport_state.stop(input_state);
+            break;
+        case eKeyRole::TransporterOn:
+            m_transport_state.move_transporter(input_state);
             break;
         case eKeyRole::uTableChanging:
             m_input_states.uTableChanging = input_state;
             m_state->change_tables(input_state);
-
             break;
         case eKeyRole::uTableBack:
             m_input_states.uTableBack = input_state;
@@ -127,16 +135,20 @@ void StateMachine::apply_state() {
         return;
     }
 
+    // if(m_new_state == ESTATE::Error) {
+    //     m_led_pin.set();
+    // }
+
     if(m_state) {
-        m_state->~IState();
         delete m_state;
         m_state = nullptr;
     }
+    m_transport_state_active = false;
 
     //
     const bool has_stop_control = check_for_stop_control(m_new_state);
     if(has_stop_control) {
-        m_led_pin.set();
+        // m_led_pin.set();
     }
 
     switch(m_new_state) {
@@ -169,9 +181,11 @@ void StateMachine::apply_state() {
         case ESTATE::Wait:
             m_state = new WaitState(this);
             break;
+            // If you want to support ESTATE::Transporter, add it to your enum
+            // and handle here
     }
 
-    if(m_state) {
+    if(m_state || m_transport_state_active) {
         m_current_state = m_new_state;
     }
 }

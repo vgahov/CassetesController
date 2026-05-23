@@ -11,11 +11,10 @@ TableBackDownState::TableBackDownState(IStateMachine* state_machine,
 }
 
 TableBackDownState::~TableBackDownState() {
-    native_signal_triggered(true,
-                            StatesToStopList{
-                                {true, eOutputRole::TABLE_BACK},
-                                {true, eOutputRole::TABLE_CHANGING_INDICATION},
-                            });
+    clear_output_signals(StatesToStopList{
+        {true, eOutputRole::TABLE_BACK},
+        {true, eOutputRole::TABLE_CHANGING_INDICATION},
+    });
 }
 
 void TableBackDownState::on_table_front(bool state) {

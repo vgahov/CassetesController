@@ -7,6 +7,7 @@
 
 #include "istatemachine.h"
 #include "states/istate.h"
+#include "states/transporterstate.h"
 
 class StateMachine final : public IDispatcherListener,
                            public IKeyHandlerListener,
@@ -44,6 +45,8 @@ private:
     uint32_t m_period_usec = 0;
     InputStates m_input_states;
     OutputHandler& m_outputhandler;
+    TransporterState m_transport_state;
+    bool m_transport_state_active = false;
 
     static constexpr uint32_t LED_PERIOD_MSEC = 2000;
 

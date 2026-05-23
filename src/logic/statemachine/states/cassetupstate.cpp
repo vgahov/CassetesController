@@ -10,10 +10,10 @@ CasseteUpState::CasseteUpState(IStateMachine* state_machine, bool with_control)
 }
 
 CasseteUpState::~CasseteUpState() {
-    native_signal_triggered(true, StatesToStopList{
-                                      {true, eOutputRole::OIL_PUMP},
-                                      {true, eOutputRole::CASSETTE_UP_STAIRS},
-                                  });
+    clear_output_signals(StatesToStopList{
+        {true, eOutputRole::OIL_PUMP},
+        {true, eOutputRole::CASSETTE_UP_STAIRS},
+    });
 }
 
 void CasseteUpState::on_cassete_down(bool state) {

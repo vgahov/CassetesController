@@ -8,6 +8,18 @@
 #include "tablebackupstate.h"
 #include "tablefrontstate.h"
 
+TableChangingState::TableChangingState(IStateMachine* state_machine)
+    : IState(state_machine) {
+    for(size_t i = 0; i < static_cast<size_t>(ETableChangingSubState::COUNT);
+        ++i) {
+        m_sub_states[i] = ETableChangingSubState::None;
+    }
+
+    check_initial_conditions();
+}
+
+TableChangingState::~TableChangingState() { cleanup_current_substate(); }
+
 void TableChangingState::change_state(ESTATE state) {
     if(m_state_machine) {
         switch(state) {
@@ -120,7 +132,7 @@ void TableChangingState::check_initial_conditions() {
             put_substate(0, ETableChangingSubState::TableToBackDown);
             put_substate(1, ETableChangingSubState::CasseteToDown);
             put_substate(2, ETableChangingSubState::TableToFront);
-            put_substate(3, ETableChangingSubState::None);
+            put_substate(3, ETableChangingSubState::CasseteToUp);
             put_substate(4, ETableChangingSubState::None);
             should_be_started = true;
         }
@@ -135,7 +147,7 @@ void TableChangingState::check_initial_conditions() {
         if(input_states.sTableBackDown && input_states.sTableBackUp &&
            !input_states.sTableFront) {
             put_substate(0, ETableChangingSubState::TableToFront);
-            put_substate(1, ETableChangingSubState::None);
+            put_substate(1, ETableChangingSubState::CasseteToUp);
             put_substate(2, ETableChangingSubState::None);
             put_substate(3, ETableChangingSubState::None);
             put_substate(4, ETableChangingSubState::None);
@@ -158,10 +170,10 @@ void TableChangingState::check_initial_conditions() {
         // Check if:
         // - lower table is on front of the work surface, upper one is inside of
         // the cassete
-        if(input_states.sTableBackDown && !input_states.sTableBackUp &&
+        if(!input_states.sTableBackDown && input_states.sTableBackUp &&
            input_states.sTableFront) {
             put_substate(0, ETableChangingSubState::CasseteToUp);
-            put_substate(1, ETableChangingSubState::TableToBackUp);
+            put_substate(1, ETableChangingSubState::TableToBackDown);
             put_substate(2, ETableChangingSubState::CasseteToDown);
             put_substate(3, ETableChangingSubState::TableToFront);
             put_substate(4, ETableChangingSubState::CasseteToUp);

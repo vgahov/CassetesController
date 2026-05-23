@@ -11,11 +11,10 @@ TableFrontState::TableFrontState(IStateMachine* state_machine,
 }
 
 TableFrontState::~TableFrontState() {
-    native_signal_triggered(true,
-                            StatesToStopList{
-                                {true, eOutputRole::TABLE_FORWARD},
-                                {true, eOutputRole::TABLE_CHANGING_INDICATION},
-                            });
+    clear_output_signals(StatesToStopList{
+        {true, eOutputRole::TABLE_FORWARD},
+        {true, eOutputRole::TABLE_CHANGING_INDICATION},
+    });
 }
 
 void TableFrontState::on_table_back_up(bool state) {

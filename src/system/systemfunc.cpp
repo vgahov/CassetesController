@@ -1,10 +1,28 @@
 ﻿#include "systemfunc.h"
 
+#include <avr/delay.h>
+#include <avr/interrupt.h>
+#include <avr/wdt.h>
+#include <port/port.h>
+
+extern Pin m_led_pin;
+
 // See description
 // https://stackoverflow.com/questions/7015285/undefined-reference-to-operator-deletevoid
 void* operator new(size_t n) {
     void* const p = malloc(n);
-    // handle p == 0
+    if(!p) {
+        // Allocation failed — avoid returning nullptr which would cause
+        // undefined behavior when used by callers. Trigger a watchdog reset
+        // to recover into a clean startup state.
+        cli();
+        // wdt_enable(WDTO_15MS);
+        while(true) {
+            // wait for watchdog to reset the MCU
+            m_led_pin.toggle();
+            _delay_ms(1000);
+        }
+    }
     return p;
 }
 

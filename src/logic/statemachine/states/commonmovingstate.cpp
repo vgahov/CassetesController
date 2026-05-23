@@ -67,7 +67,18 @@ void CommonMovingState::opposite_signal_triggered(bool state) {
 
 void CommonMovingState::native_signal_triggered(
     bool state, const StatesToStopList& states_to_stop) {
+    clear_output_signals(states_to_stop);
     if(m_state_machine && state) {
+        transition_to_waiting_state();
+    }
+    else {
+        transition_to_error_state();
+    }
+}
+
+void CommonMovingState::clear_output_signals(
+    const StatesToStopList& states_to_stop) {
+    if(m_state_machine) {
         for(int i = 0; i < MAX_STATES_TO_STOP; ++i) {
             if(states_to_stop[i].stop &&
                states_to_stop[i].output_role != eOutputRole::KEY_ROLE_COUNT) {
@@ -75,9 +86,5 @@ void CommonMovingState::native_signal_triggered(
                                                   false);
             }
         }
-        transition_to_waiting_state();
-    }
-    else {
-        transition_to_error_state();
     }
 }

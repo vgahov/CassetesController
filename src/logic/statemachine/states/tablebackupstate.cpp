@@ -11,11 +11,10 @@ TableBackUpState::TableBackUpState(IStateMachine* state_machine,
 }
 
 TableBackUpState::~TableBackUpState() {
-    native_signal_triggered(true,
-                            StatesToStopList{
-                                {true, eOutputRole::TABLE_BACK},
-                                {true, eOutputRole::TABLE_CHANGING_INDICATION},
-                            });
+    clear_output_signals(StatesToStopList{
+        {true, eOutputRole::TABLE_BACK},
+        {true, eOutputRole::TABLE_CHANGING_INDICATION},
+    });
 }
 
 void TableBackUpState::on_table_front(bool state) {

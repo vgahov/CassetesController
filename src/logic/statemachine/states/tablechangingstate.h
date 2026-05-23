@@ -8,16 +8,8 @@
 
 class TableChangingState final : public IState, public IStateMachine {
 public:
-    TableChangingState(IStateMachine* state_machine) : IState(state_machine) {
-        for(size_t i = 0;
-            i < static_cast<size_t>(ETableChangingSubState::COUNT); ++i) {
-            m_sub_states[i] = ETableChangingSubState::None;
-        }
-
-        check_initial_conditions();
-    }
-
-    ~TableChangingState() { cleanup_current_substate(); }
+    TableChangingState(IStateMachine* state_machine);
+    ~TableChangingState();
 
 private:
     void change_state(ESTATE state) override;
@@ -56,10 +48,10 @@ private:
     ETableChangingSubState get_next_substate();
     void cleanup_current_substate() {
         if(m_current_substate) {
-            m_current_substate->~IState();
             delete m_current_substate;
             m_current_substate = nullptr;
         }
+        m_led_pin.toggle();
     }
 
 private:

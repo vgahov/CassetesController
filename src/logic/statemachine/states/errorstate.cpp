@@ -5,8 +5,31 @@
 
 #include "helpers/helpers.h"
 
-void ErrorState::move_table_front(bool state) { check_for_valid_state(); }
-void ErrorState::move_table_back(bool state) { check_for_valid_state(); }
+void ErrorState::move_table_front(bool state) {
+    if(!(m_state_machine && state)) {
+        return;
+    }
+
+    const auto input_states = m_state_machine->get_input_states();
+    if(input_states.uSTOP) {
+        m_state_machine->change_state(ESTATE::TableFront);
+    }
+}
+void ErrorState::move_table_back(bool state) {
+    if(!(m_state_machine && state)) {
+        return;
+    }
+
+    const auto input_states = m_state_machine->get_input_states();
+    if(input_states.uSTOP) {
+        if(input_states.sCassetteDownStairs) {
+            m_state_machine->change_state(ESTATE::TableBackUp);
+        }
+        else if(input_states.sCassetteUpStairs) {
+            m_state_machine->change_state(ESTATE::TableBackDown);
+        }
+    }
+}
 void ErrorState::change_tables(bool state) {
     if(!(m_state_machine && state)) {
         return;

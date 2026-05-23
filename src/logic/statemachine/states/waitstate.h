@@ -10,7 +10,7 @@ class IStateMachine;
 class WaitState final : public IState {
 public:
     WaitState(IStateMachine* state_machine) : IState(state_machine) {
-        m_state_machine->clear_output_states();
+        // m_state_machine->clear_output_states();
         m_state_machine->set_output_state(eOutputRole::INDICATION_READY, true);
     }
 
