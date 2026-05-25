@@ -26,6 +26,7 @@ void CommonMovingState::on_table_back_down(bool state) {
 
 //+++
 void CommonMovingState::stop(bool state) {
+    // m_led_pin.toggle();
     if(m_with_stop_control) {
         transition_to_error_state();
         return;

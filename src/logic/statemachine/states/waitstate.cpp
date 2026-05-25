@@ -32,12 +32,12 @@ void WaitState::move_table_back(bool state) {
     }
 
     if(input_states.sTableFront) {
-        if(!input_states.sTableBackDown) {
+        if(!input_states.sTableBackDown && input_states.sCassetteUpStairs) {
             m_state_machine->change_state(ESTATE::TableBackDown);
             return;
         }
 
-        if(!input_states.sTableBackUp) {
+        if(!input_states.sTableBackUp && input_states.sCassetteDownStairs) {
             m_state_machine->change_state(ESTATE::TableBackUp);
             return;
         }

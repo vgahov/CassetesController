@@ -148,7 +148,10 @@ void StateMachine::apply_state() {
     //
     const bool has_stop_control = check_for_stop_control(m_new_state);
     if(has_stop_control) {
-        // m_led_pin.set();
+        m_led_pin.set();
+    }
+    else {
+        m_led_pin.reset();
     }
 
     switch(m_new_state) {
@@ -200,7 +203,10 @@ bool StateMachine::check_for_stop_control(ESTATE state) const {
     switch(state) {
         case ESTATE::CasseteDown:
         case ESTATE::CasseteUp:
-            return m_input_states.uSTOP && m_input_states.uTableChanging &&
+        case ESTATE::TableBackDown:
+        case ESTATE::TableBackUp:
+        case ESTATE::TableFront:
+            return m_input_states.uSTOP &&
                    !::check_for_valid_state(m_input_states);
         default:
             return false;

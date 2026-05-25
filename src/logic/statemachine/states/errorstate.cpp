@@ -64,9 +64,9 @@ void ErrorState::update() {
         return;
     }
 
-    m_blink_state = !m_blink_state;
-    m_state_machine->set_output_state(eOutputRole::INDICATION_READY,
-                                      m_blink_state);
+    // m_blink_state = !m_blink_state;
+    //  m_state_machine->set_output_state(eOutputRole::INDICATION_READY,
+    //                                    m_blink_state);
 }
 
 void ErrorState::check_for_valid_state() {
