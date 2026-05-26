@@ -2,7 +2,6 @@
 #define ISTATE_H
 
 #include <port/port.h>
-extern Pin m_led_pin;
 
 class IStateMachine;
 

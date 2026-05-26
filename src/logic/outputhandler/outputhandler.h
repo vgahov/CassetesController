@@ -16,6 +16,7 @@ enum class eOutputRole {
     OIL_PUMP,
     ROLLER_DOWN_STAIRS,
     ROLLER_UP_STAIRS,
+    CONTROL_LED,
     KEY_ROLE_COUNT
 };
 
@@ -50,6 +51,7 @@ public:
     void set_oil_pump(bool on = true);
     void set_roller_down_stairs(bool on = true);
     void set_roller_up_stairs(bool on = true);
+    void set_control_led(bool on = true);
     void clear_all();
 };
 #endif  // OUTPUTHANDLER_H

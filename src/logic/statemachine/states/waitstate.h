@@ -18,7 +18,6 @@ private:
     void move_table_front(bool state) override;
     void move_table_back(bool state) override;
     void change_tables(bool state) override;
-    void stop(bool state) override;
     void on_error() override;
     void update() override;
 

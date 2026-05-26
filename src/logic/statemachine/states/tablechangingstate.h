@@ -51,7 +51,6 @@ private:
             delete m_current_substate;
             m_current_substate = nullptr;
         }
-        m_led_pin.toggle();
     }
 
 private:

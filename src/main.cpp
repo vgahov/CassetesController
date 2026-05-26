@@ -9,21 +9,11 @@
 
 static constexpr uint32_t TIMER_PERIOD_USEC = 5000;
 
-Pin m_led_pin{ePORT::ePORTB, 4, false};
-// extern Pin m_led_pin;
-
 int main(void) {
     wdt_disable();
     MCUCR |= (1 << JTD);
     MCUCR |= (1 << JTD);
 
-    m_led_pin.toggle();
-    _delay_ms(1000);
-    m_led_pin.toggle();
-    _delay_ms(1000);
-    m_led_pin.toggle();
-    _delay_ms(1000);
-    m_led_pin.toggle();
     /*{
         auto& output_handler = OutputHandler::get_instance();
         StateMachine state_machine(output_handler);
@@ -38,10 +28,21 @@ int main(void) {
                                      eKeyState::PRESSED);
     }*/
 
+    auto& output_handler = OutputHandler::get_instance();
+    output_handler.set_control_led(true);
+    _delay_ms(1000);
+    output_handler.set_control_led(false);
+    _delay_ms(1000);
+    output_handler.set_control_led(true);
+    _delay_ms(1000);
+    output_handler.set_control_led(false);
+    _delay_ms(1000);
+    output_handler.set_control_led(true);
+
     Dispatcher dispatcher;
     Timer0::init(TIMER_PERIOD_USEC);
     Timer0::get_instance().set_interrupt_callback(&dispatcher);
-    auto& output_handler = OutputHandler::get_instance();
+
     StateMachine state_machine(output_handler);
     KeyFabric::init(dispatcher, state_machine);
     dispatcher.add_listener(&state_machine, 10, ePeriodUnit::mSec);

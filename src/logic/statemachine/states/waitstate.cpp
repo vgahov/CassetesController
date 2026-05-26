@@ -70,13 +70,6 @@ void WaitState::change_tables(bool state) {
     m_state_machine->change_state(ESTATE::TableChanging);
 }
 
-void WaitState::stop(bool state) {
-    if(m_state_machine) {
-        // m_state_machine->set_output_state(eOutputRole::INDICATION_READY,
-        //                                   !state);
-    }
-}
-
 void WaitState::on_error() {
     if(m_state_machine) {
         m_state_machine->change_state(ESTATE::Error);

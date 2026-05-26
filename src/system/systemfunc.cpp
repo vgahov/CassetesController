@@ -5,8 +5,6 @@
 #include <avr/wdt.h>
 #include <port/port.h>
 
-extern Pin m_led_pin;
-
 // See description
 // https://stackoverflow.com/questions/7015285/undefined-reference-to-operator-deletevoid
 void* operator new(size_t n) {
@@ -17,8 +15,10 @@ void* operator new(size_t n) {
         // to recover into a clean startup state.
         cli();
         // wdt_enable(WDTO_15MS);
+        Pin m_led_pin{ePORT::ePORTB, 4, false};
         while(true) {
             // wait for watchdog to reset the MCU
+
             m_led_pin.toggle();
             _delay_ms(1000);
         }

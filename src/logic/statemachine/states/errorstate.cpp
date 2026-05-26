@@ -5,6 +5,18 @@
 
 #include "helpers/helpers.h"
 
+ErrorState::ErrorState(IStateMachine* state_machine, uint32_t period_usec)
+    : IState(state_machine), m_period_usec(period_usec) {}
+
+ErrorState::~ErrorState() {
+    if(m_state_machine) {
+        m_state_machine->set_output_state(
+            eOutputRole::TABLE_CHANGING_INDICATION, false);
+        m_state_machine->set_output_state(eOutputRole::TABLE_INDICATION, false);
+        // m_state_machine->set_output_state(eOutputRole::CONTROL_LED, true);
+    }
+}
+
 void ErrorState::move_table_front(bool state) {
     if(!(m_state_machine && state)) {
         return;
@@ -48,11 +60,11 @@ void ErrorState::change_tables(bool state) {
         }
     }
 }
-void ErrorState::on_cassete_up(bool state) { check_for_valid_state(); }
-void ErrorState::on_cassete_down(bool state) { check_for_valid_state(); }
-void ErrorState::on_table_front(bool state) { check_for_valid_state(); }
-void ErrorState::on_table_back_up(bool state) { check_for_valid_state(); }
-void ErrorState::on_table_back_down(bool state) { check_for_valid_state(); }
+void ErrorState::on_cassete_up(bool) { check_for_valid_state(); }
+void ErrorState::on_cassete_down(bool) { check_for_valid_state(); }
+void ErrorState::on_table_front(bool) { check_for_valid_state(); }
+void ErrorState::on_table_back_up(bool) { check_for_valid_state(); }
+void ErrorState::on_table_back_down(bool) { check_for_valid_state(); }
 
 void ErrorState::update() {
     if(m_delay_for_blink < 100) {
@@ -64,9 +76,11 @@ void ErrorState::update() {
         return;
     }
 
-    // m_blink_state = !m_blink_state;
-    //  m_state_machine->set_output_state(eOutputRole::INDICATION_READY,
-    //                                    m_blink_state);
+    m_blink_state = !m_blink_state;
+    m_state_machine->set_output_state(eOutputRole::TABLE_CHANGING_INDICATION,
+                                      m_blink_state);
+    m_state_machine->set_output_state(eOutputRole::TABLE_INDICATION,
+                                      !m_blink_state);
 }
 
 void ErrorState::check_for_valid_state() {
@@ -74,5 +88,95 @@ void ErrorState::check_for_valid_state() {
 
     if(m_state_machine && ::check_for_valid_state(input_states)) {
         m_state_machine->change_state(ESTATE::Wait);
+    }
+}
+
+void ErrorState::handle_error_led_blinking() {
+    if(!m_state_machine) {
+        return;
+    }
+
+    // 2 cassetes are off - 1
+    // 2 cassetes are on - 2
+    // cassete is empty or tables are in undefined position - 3
+    // low table is in undefined position - 4
+    // upper table is in undefined position - 5
+    // any other invalid state - 6
+    const auto input_states = m_state_machine->get_input_states();
+    uint8_t error_code = 0;
+    if(!input_states.sCassetteDownStairs && !input_states.sCassetteUpStairs) {
+        error_code = 1;
+    }
+    else if(input_states.sCassetteDownStairs &&
+            input_states.sCassetteUpStairs) {
+        error_code = 2;
+    }
+    else if(!input_states.sTableBackDown && !input_states.sTableBackUp &&
+            input_states.sTableFront) {
+        error_code = 3;
+    }
+    else if(input_states.sTableBackUp && !input_states.sTableBackDown &&
+            !input_states.sTableFront) {
+        error_code = 4;
+    }
+    else if(input_states.sTableBackDown && !input_states.sTableBackUp &&
+            !input_states.sTableFront) {
+        error_code = 5;
+    }
+    else {
+        error_code = 7;
+    }
+
+    if(m_current_error_code != error_code) {
+        m_current_error_code = error_code;
+        m_current_blinking_position = 0;
+        m_current_sub_blinking_index = 0;
+        m_error_blinking[0].blinking_duration_us = 0;
+        m_error_blinking[1].blinking_duration_us = 0;
+        m_eror_blink_state = true;
+        m_state_machine->set_output_state(eOutputRole::CONTROL_LED,
+                                          m_eror_blink_state);
+        if(error_code == 0) {
+            m_error_blinking[0].blinking_number = 0;
+            m_error_blinking[0].blinking_interval_s = 0;
+
+            m_error_blinking[1].blinking_number = 0;
+            m_error_blinking[1].blinking_interval_s = 0;
+        }
+        else {
+            m_error_blinking[0].blinking_number = 1;
+            m_error_blinking[0].blinking_interval_s = 3;
+
+            m_error_blinking[1].blinking_number = error_code * 2;
+            m_error_blinking[1].blinking_interval_s = 1;
+        }
+    }
+    else {
+        auto& current_blinking = m_error_blinking[m_current_blinking_position];
+        if(current_blinking.blinking_interval_s == 0) {
+            return;
+        }
+
+        if(current_blinking.blinking_duration_us >=
+           current_blinking.blinking_interval_s * 1000000) {
+            current_blinking.blinking_duration_us = 0;
+
+            if(m_current_sub_blinking_index <
+               current_blinking.blinking_number) {
+                m_eror_blink_state = !m_eror_blink_state;
+                m_state_machine->set_output_state(eOutputRole::CONTROL_LED,
+                                                  m_eror_blink_state);
+                ++m_current_sub_blinking_index;
+            }
+            else {
+                m_current_sub_blinking_index = 0;
+                m_current_blinking_position =
+                    (m_current_blinking_position + 1) %
+                    (sizeof(m_error_blinking) / sizeof(m_error_blinking[0]));
+            }
+        }
+        else {
+            current_blinking.blinking_duration_us += m_period_usec;
+        }
     }
 }

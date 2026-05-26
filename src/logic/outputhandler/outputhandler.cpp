@@ -14,6 +14,7 @@ OutputHandler::RolePin
         {eOutputRole::OIL_PUMP, Pin{ePORT::ePORTB, 1, false}},
         {eOutputRole::ROLLER_DOWN_STAIRS, Pin{ePORT::ePORTB, 0, false}},
         {eOutputRole::ROLLER_UP_STAIRS, Pin{ePORT::ePORTE, 6, false}},
+        {eOutputRole::CONTROL_LED, Pin{ePORT::ePORTB, 4, false}},
 };
 
 void OutputHandler::set_table_forward(bool on) {
@@ -65,6 +66,10 @@ void OutputHandler::clear_all() {
     for(uint8_t i = 0; i < OUTPUT_ROLE_COUNT; ++i) {
         role_pins[i].pin.reset();
     }
+}
+
+void OutputHandler::set_control_led(bool on) {
+    set_role_state(eOutputRole::CONTROL_LED, on);
 }
 
 void OutputHandler::set_role_state(eOutputRole role, bool on) {

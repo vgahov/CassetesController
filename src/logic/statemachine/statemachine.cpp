@@ -147,12 +147,6 @@ void StateMachine::apply_state() {
 
     //
     const bool has_stop_control = check_for_stop_control(m_new_state);
-    if(has_stop_control) {
-        m_led_pin.set();
-    }
-    else {
-        m_led_pin.reset();
-    }
 
     switch(m_new_state) {
         case ESTATE::Empty:
@@ -167,7 +161,7 @@ void StateMachine::apply_state() {
             m_state = new DetectionState(this, m_period_usec);
             break;
         case ESTATE::Error:
-            m_state = new ErrorState(this);
+            m_state = new ErrorState(this, m_period_usec);
             break;
         case ESTATE::TableBackDown:
             m_state = new TableBackDownState(this, has_stop_control);

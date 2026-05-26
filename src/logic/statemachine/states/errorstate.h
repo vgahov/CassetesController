@@ -9,14 +9,8 @@ class IStateMachine;
 
 class ErrorState final : public IState {
 public:
-    ErrorState(IStateMachine* state_machine) : IState(state_machine) {
-        if(!m_state_machine) {
-            return;
-        }
-        m_state_machine->clear_output_states();
-        m_state_machine->set_output_state(eOutputRole::INDICATION_READY, false);
-        m_blink_state = false;
-    }
+    ErrorState(IStateMachine* state_machine, uint32_t period_usec);
+    ~ErrorState();
 
 private:
     void move_table_front(bool state) override;
@@ -31,11 +25,29 @@ private:
 
     void update() override;
 
+private:
     void check_for_valid_state();
+    void handle_error_led_blinking();
 
 private:
+    const uint32_t m_period_usec;
     uint32_t m_delay_for_blink = 0;
     bool m_blink_state = false;
+
+    struct ErrorBlinking {
+        uint8_t blinking_number;
+        uint8_t blinking_interval_s;
+        uint32_t blinking_duration_us;
+    };
+
+    ErrorBlinking m_error_blinking[2] = {
+        {0, 0, 0},
+        {0, 0, 0},
+    };
+    uint8_t m_current_blinking_position = 0;
+    uint8_t m_current_sub_blinking_index = 0;
+    uint8_t m_current_error_code = 0;
+    bool m_eror_blink_state = true;
 };
 
 #endif  // ERROR_STATE_H
