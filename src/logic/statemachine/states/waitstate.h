@@ -10,7 +10,17 @@ class IStateMachine;
 class WaitState final : public IState {
 public:
     WaitState(IStateMachine* state_machine) : IState(state_machine) {
-        m_state_machine->set_output_state(eOutputRole::INDICATION_READY, true);
+        if(m_state_machine) {
+            m_state_machine->set_output_state(eOutputRole::INDICATION_READY,
+                                              true);
+            m_state_machine->set_output_state(eOutputRole::CONTROL_LED, true);
+        }
+    }
+
+    ~WaitState() {
+        if(m_state_machine) {
+            m_state_machine->set_output_state(eOutputRole::CONTROL_LED, false);
+        }
     }
 
 private:

@@ -11,7 +11,7 @@ class TableFrontState final : public CommonMovingState {
 public:
     TableFrontState(IStateMachine* state_machine, uint32_t blink_period_usec,
                     bool with_control, bool handle_blinking);
-    ~TableFrontState();
+    ~TableFrontState() = default;
 
 private:
     void on_table_back_up(bool state) override;

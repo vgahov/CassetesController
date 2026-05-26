@@ -7,30 +7,39 @@ TableFrontState::TableFrontState(IStateMachine* state_machine,
       m_blinker_handler(state_machine, blink_period_usec, handle_blinking) {
     if(m_state_machine) {
         m_state_machine->set_output_state(eOutputRole::TABLE_FORWARD, true);
-        m_state_machine->set_output_state(
-            eOutputRole::TABLE_CHANGING_INDICATION, true);
     }
 }
 
-TableFrontState::~TableFrontState() {
-    clear_output_signals(StatesToStopList{
-        {true, eOutputRole::TABLE_FORWARD},
-        {true, eOutputRole::TABLE_CHANGING_INDICATION},
-    });
-}
-
 void TableFrontState::on_table_back_up(bool state) {
-    opposite_signal_triggered(state);
+    if(!m_state_machine) {
+        return;
+    }
+    const auto input_states = m_state_machine->get_input_states();
+    if(input_states.sCassetteDownStairs) {
+        opposite_signal_triggered(state);
+    }
+    else {
+        transition_to_error_state();
+    }
 }
 
 void TableFrontState::on_table_back_down(bool state) {
-    opposite_signal_triggered(state);
+    if(!m_state_machine) {
+        return;
+    }
+    const auto input_states = m_state_machine->get_input_states();
+    if(input_states.sCassetteUpStairs) {
+        opposite_signal_triggered(state);
+    }
+    else {
+        transition_to_error_state();
+    }
 }
 
 void TableFrontState::on_table_front(bool state) {
     StatesToStopList states_to_stop = {
         {true, eOutputRole::TABLE_FORWARD},
-        {true, eOutputRole::TABLE_CHANGING_INDICATION},
+        {false, eOutputRole::KEY_ROLE_COUNT},
     };
     native_signal_triggered(state, states_to_stop);
 }

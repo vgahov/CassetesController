@@ -9,11 +9,26 @@
 
 static constexpr uint32_t TIMER_PERIOD_USEC = 5000;
 
-int main(void) {
-    wdt_disable();
-    MCUCR |= (1 << JTD);
-    MCUCR |= (1 << JTD);
+void watchdog_handler() {
+    uint8_t reset_reason = MCUSR;
 
+    MCUSR = 0;
+    wdt_disable();
+    DDRB |= (1 << PB4);
+    if(reset_reason & (1 << WDRF)) {
+        Pin ready_pin = Pin{ePORT::ePORTC, 4, false};
+        ready_pin.reset();
+        Pin controller_pin = {ePORT::ePORTB, 4, false};
+        while(1) {
+            controller_pin.toggle();
+            _delay_ms(100);
+        }
+    }
+}
+
+int main(void) {
+    MCUCR |= (1 << JTD);
+    MCUCR |= (1 << JTD);
     /*{
         auto& output_handler = OutputHandler::get_instance();
         StateMachine state_machine(output_handler);
@@ -28,6 +43,8 @@ int main(void) {
                                      eKeyState::PRESSED);
     }*/
 
+    watchdog_handler();
+
     auto& output_handler = OutputHandler::get_instance();
     output_handler.set_control_led(true);
     _delay_ms(1000);
@@ -38,6 +55,8 @@ int main(void) {
     output_handler.set_control_led(false);
     _delay_ms(1000);
     output_handler.set_control_led(true);
+
+    wdt_enable(WDTO_250MS);
 
     Dispatcher dispatcher;
     Timer0::init(TIMER_PERIOD_USEC);

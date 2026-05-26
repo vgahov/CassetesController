@@ -27,6 +27,7 @@ private:
 
 private:
     void check_for_valid_state();
+    void handle_error_led_status_blinking();
     void handle_error_led_blinking();
 
 private:
@@ -35,8 +36,8 @@ private:
     bool m_blink_state = false;
 
     struct ErrorBlinking {
-        uint8_t blinking_number;
-        uint8_t blinking_interval_s;
+        uint32_t blinking_number;
+        uint32_t blinking_interval_ms;
         uint32_t blinking_duration_us;
     };
 

@@ -1,6 +1,7 @@
 #include "statemachine.h"
 
 #include <avr/interrupt.h>
+#include <avr/wdt.h>
 
 #include "states/cassetedownstate.h"
 #include "states/casseteupstate.h"
@@ -20,9 +21,7 @@ extern Pin m_led_pin;
 StateMachine::StateMachine(OutputHandler& outputhandler)
     : m_state(nullptr),
       m_outputhandler(outputhandler),
-      m_transport_state(this) {
-    m_state = nullptr;
-}
+      m_transport_state(this) {}
 
 StateMachine::~StateMachine() {}
 
@@ -35,6 +34,7 @@ void StateMachine::on_dispatcher_call() {
     apply_state();
     detect_error();
     handle_led();
+    wdt_reset();
 }
 
 void StateMachine::set_dispatcher_period(uint32_t period_usec) {
