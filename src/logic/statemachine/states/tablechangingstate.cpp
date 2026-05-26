@@ -8,8 +8,10 @@
 #include "tablebackupstate.h"
 #include "tablefrontstate.h"
 
-TableChangingState::TableChangingState(IStateMachine* state_machine)
-    : IState(state_machine) {
+TableChangingState::TableChangingState(IStateMachine* state_machine,
+                                       uint32_t blink_period_usec)
+    : IState(state_machine),
+      m_blinker_handler(state_machine, blink_period_usec, true) {
     for(size_t i = 0; i < static_cast<size_t>(ETableChangingSubState::COUNT);
         ++i) {
         m_sub_states[i] = ETableChangingSubState::None;
@@ -87,6 +89,7 @@ void TableChangingState::stop(bool state) {
         m_state_machine->change_state(ESTATE::Wait);
     }
 }
+void TableChangingState::update() { m_blinker_handler.handle_blinking(); }
 void TableChangingState::check_initial_conditions() {
     if(!m_state_machine) {
         return;
@@ -112,8 +115,8 @@ void TableChangingState::check_initial_conditions() {
         }
 
         // Check if:
-        // - upper table is on front of the work surface, lower one is inside of
-        // the cassete
+        // - upper table is on front of the work surface, lower one is
+        // inside of the cassete
         if(input_states.sTableBackDown && !input_states.sTableBackUp &&
            input_states.sTableFront) {
             put_substate(0, ETableChangingSubState::CasseteToDown);
@@ -125,8 +128,8 @@ void TableChangingState::check_initial_conditions() {
         }
 
         // Check if:
-        // - lower table is on front of the work surface, upper one is inside of
-        // the cassete
+        // - lower table is on front of the work surface, upper one is
+        // inside of the cassete
         if(!input_states.sTableBackDown && input_states.sTableBackUp &&
            input_states.sTableFront) {
             put_substate(0, ETableChangingSubState::TableToBackDown);
@@ -155,8 +158,8 @@ void TableChangingState::check_initial_conditions() {
         }
 
         // Check if:
-        // - upper table is on front of the work surface, lower one is inside of
-        // the cassete
+        // - upper table is on front of the work surface, lower one is
+        // inside of the cassete
         if(input_states.sTableBackDown && !input_states.sTableBackUp &&
            input_states.sTableFront) {
             put_substate(0, ETableChangingSubState::TableToBackUp);
@@ -168,8 +171,8 @@ void TableChangingState::check_initial_conditions() {
         }
 
         // Check if:
-        // - lower table is on front of the work surface, upper one is inside of
-        // the cassete
+        // - lower table is on front of the work surface, upper one is
+        // inside of the cassete
         if(!input_states.sTableBackDown && input_states.sTableBackUp &&
            input_states.sTableFront) {
             put_substate(0, ETableChangingSubState::CasseteToUp);
@@ -200,13 +203,13 @@ void TableChangingState::trigger_substate() {
             m_current_substate = new CasseteUpState(this, false);
             break;
         case ETableChangingSubState::TableToFront:
-            m_current_substate = new TableFrontState(this, false);
+            m_current_substate = new TableFrontState(this, 0, false, false);
             break;
         case ETableChangingSubState::TableToBackDown:
-            m_current_substate = new TableBackDownState(this, false);
+            m_current_substate = new TableBackDownState(this, 0, false, false);
             break;
         case ETableChangingSubState::TableToBackUp:
-            m_current_substate = new TableBackUpState(this, false);
+            m_current_substate = new TableBackUpState(this, 0, false, false);
             break;
         default:
             break;

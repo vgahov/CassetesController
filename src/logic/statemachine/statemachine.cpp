@@ -164,16 +164,19 @@ void StateMachine::apply_state() {
             m_state = new ErrorState(this, m_period_usec);
             break;
         case ESTATE::TableBackDown:
-            m_state = new TableBackDownState(this, has_stop_control);
+            m_state = new TableBackDownState(this, m_period_usec,
+                                             has_stop_control, true);
             break;
         case ESTATE::TableBackUp:
-            m_state = new TableBackUpState(this, has_stop_control);
+            m_state = new TableBackUpState(this, m_period_usec,
+                                           has_stop_control, true);
             break;
         case ESTATE::TableChanging:
-            m_state = new TableChangingState(this);
+            m_state = new TableChangingState(this, m_period_usec);
             break;
         case ESTATE::TableFront:
-            m_state = new TableFrontState(this, has_stop_control);
+            m_state = new TableFrontState(this, m_period_usec, has_stop_control,
+                                          true);
             break;
         case ESTATE::Wait:
             m_state = new WaitState(this);

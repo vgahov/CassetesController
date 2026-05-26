@@ -1,8 +1,10 @@
 #include "tablefrontstate.h"
 
 TableFrontState::TableFrontState(IStateMachine* state_machine,
-                                 bool with_control)
-    : CommonMovingState(state_machine, with_control) {
+                                 uint32_t blink_period_usec, bool with_control,
+                                 bool handle_blinking)
+    : CommonMovingState(state_machine, with_control),
+      m_blinker_handler(state_machine, blink_period_usec, handle_blinking) {
     if(m_state_machine) {
         m_state_machine->set_output_state(eOutputRole::TABLE_FORWARD, true);
         m_state_machine->set_output_state(
@@ -36,3 +38,5 @@ void TableFrontState::on_table_front(bool state) {
 void TableFrontState::move_table_front(bool state) {
     main_action_button(state);
 }
+
+void TableFrontState::update() { m_blinker_handler.handle_blinking(); }

@@ -1,8 +1,10 @@
 #include "tablebackdownstate.h"
 
 TableBackDownState::TableBackDownState(IStateMachine* state_machine,
-                                       bool with_control)
-    : CommonMovingState(state_machine, with_control) {
+                                       uint32_t blink_period_usec,
+                                       bool with_control, bool handle_blinking)
+    : CommonMovingState(state_machine, with_control),
+      m_blinker_handler(state_machine, blink_period_usec, handle_blinking) {
     if(m_state_machine) {
         m_state_machine->set_output_state(eOutputRole::TABLE_BACK, true);
         m_state_machine->set_output_state(
@@ -28,6 +30,8 @@ void TableBackDownState::on_table_back_down(bool state) {
     };
     native_signal_triggered(state, states_to_stop);
 }
+
+void TableBackDownState::update() { m_blinker_handler.handle_blinking(); }
 
 void TableBackDownState::move_table_back(bool state) {
     main_action_button(state);
